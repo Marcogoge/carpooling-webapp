@@ -107,3 +107,4 @@
       default: 
           http_response_code(405); 
           echo json_encode(['errore'=>'Metodo non consentito']); 
+           }
