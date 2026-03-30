@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+  import { Component, OnInit } from '@angular/core';
   import { ActivatedRoute, Router, RouterLink } from '@angular/router';
   import { CommonModule } from '@angular/common';
   import { MatCardModule } from '@angular/material/card';
@@ -40,8 +40,11 @@ import { Component, OnInit } from '@angular/core';
     prenota() {
       if (!this.utente) { this.router.navigate(['/login']); return; }
       this.ps.prenota(this.viaggio.id_viaggio, this.utente.id).subscribe({
-        next: () => this.messaggio = 'Prenotazione inviata! Attendi conferma.',
+        next: () => this.messaggio = 'Prenotazione inviata. Attendi conferma.',
         error: (e: any) => this.errore = e.error?.errore ?? 'Errore'
       });
     }
+ 
+    stelle(voto: number | null): number[] { return [1,2,3,4,5]; }
+    isPiena(s: number, v: number | null) { return v !== null && s <= Math.round(v); }
   }

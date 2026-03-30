@@ -1,38 +1,84 @@
-  <div class="pagina">
+ <div class="pagina">
     <h2>Cerca un viaggio</h2>
-    <mat-card class="form-ricerca">
-      <mat-form-field appearance="outline">
-        <mat-label>Partenza</mat-label>
-        <input matInput [(ngModel)]="partenza" placeholder="es. Milano">
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Arrivo</mat-label>
-        <input matInput [(ngModel)]="arrivo" placeholder="es. Roma">
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Data</mat-label>
-        <input matInput type="date" [(ngModel)]="data">
-      </mat-form-field>
-      <button mat-raised-button color="primary" (click)="cerca()">Cerca</button>
-    </mat-card>
-    <mat-spinner *ngIf="caricamento" diameter="40"></mat-spinner>
-    <p *ngIf="cercato && viaggi.length===0" class="nessun-risultato">
-      Nessun viaggio trovato.
-    </p>
-    <mat-card *ngFor="let v of viaggi" class="viaggio-card"
+ 
+    <div class="search-card">
+      <div class="search-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Citta di partenza</mat-label>
+          <input matInput [(ngModel)]="partenza" placeholder="es. Milano">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Citta di arrivo</mat-label>
+          <input matInput [(ngModel)]="arrivo" placeholder="es. Roma">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Data</mat-label>
+          <input matInput [matDatepicker]="picker"
+                 [(ngModel)]="dataSelezionata"
+                 placeholder="Seleziona data">
+          <mat-datepicker-toggle matIconSuffix [for]="picker">
+          </mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <button mat-raised-button color="primary"
+                style="height:56px; margin-top:0"
+                (click)="cerca()">Cerca</button>
+      </div>
+    </div>
+ 
+    <mat-spinner *ngIf="caricamento" diameter="40"
+                 style="margin:40px auto"></mat-spinner>
+ 
+    <div *ngIf="cercato && viaggi.length===0" class="empty-state">
+      <p>Nessun viaggio trovato per i criteri selezionati.</p>
+    </div>
+ 
+    <mat-card *ngFor="let v of viaggi"
+              class="viaggio-card"
               (click)="vaiDettaglio(v.id_viaggio)">
-      <mat-card-header>
-        <mat-card-title>{{v.citta_partenza}} -> {{v.citta_arrivo}}</mat-card-title>
-        <mat-card-subtitle>
-          {{v.data_ora_partenza | date:'dd/MM/yyyy HH:mm'}}
-        </mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <p>Posti: <strong>{{v.posti_disponibili}}</strong></p>
-        <p>Contributo: <strong>EUR {{v.contributo}}</strong></p>
-        <p>Auto: {{v.marca_auto}} {{v.modello_auto}}</p>
-        <p>Autista: {{v.nome}} {{v.cognome}}
-           - Voto: {{v.voto_medio_autista ?? 'N/D'}}</p>
+      <mat-card-content style="padding:20px">
+        <div class="rotta">
+          <span>{{v.citta_partenza}}</span>
+          <span class="rotta-arrow">&#8594;</span>
+          <span>{{v.citta_arrivo}}</span>
+        </div>
+        <div class="card-info">
+          <div class="info-item">
+            <span class="info-label">Data e ora</span>
+            <span class="info-value">
+              {{v.data_ora_partenza | date:'dd MMM yyyy, HH:mm'}}
+            </span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Posti</span>
+            <span class="badge badge-green">{{v.posti_disponibili}} disponibili</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Contributo</span>
+            <span class="info-value">EUR {{v.contributo}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Auto</span>
+            <span class="info-value">{{v.marca_auto}} {{v.modello_auto}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Autista</span>
+            <span class="info-value">{{v.nome}} {{v.cognome}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Valutazione</span>
+            <div class="stelle">
+              <span *ngFor="let s of stelle(v.voto_medio_autista)"
+                    class="stella"
+                    [class.piena]="isPiena(s, v.voto_medio_autista)">
+                &#9733;
+              </span>
+              <span class="voto-numero" *ngIf="v.voto_medio_autista">
+                {{v.voto_medio_autista | number:'1.1-1'}}
+              </span>
+            </div>
+          </div>
+        </div>
       </mat-card-content>
     </mat-card>
   </div>

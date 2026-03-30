@@ -1,24 +1,32 @@
   <mat-toolbar color="primary" class="navbar">
-    <span class="brand" routerLink="/">Carpooling</span>
+    <span class="brand" routerLink="/">CarPooling</span>
     <span class="spacer"></span>
  
     <ng-container *ngIf="auth.isLoggedIn(); else nonLoggato">
-      <span class="utente">Ciao, {{auth.getUtente()?.nome}}</span>
+      <span class="utente">{{auth.getUtente()?.nome}}</span>
  
       <ng-container *ngIf="auth.getUtente()?.tipo === 'autista'">
         <a mat-button routerLink="/autista/dashboard">Dashboard</a>
-        <a mat-button routerLink="/autista/crea-viaggio">+ Viaggio</a>
+        <a mat-button routerLink="/autista/crea-viaggio">Nuovo viaggio</a>
       </ng-container>
  
       <ng-container *ngIf="auth.getUtente()?.tipo === 'passeggero'">
         <a mat-button routerLink="/passeggero/cerca">Cerca viaggi</a>
-        <a mat-button routerLink="/passeggero/dashboard">Prenotazioni</a>
+        <a mat-button routerLink="/passeggero/dashboard">Le mie prenotazioni</a>
       </ng-container>
  
+      <button mat-icon-button (click)="toggleDark()"
+              [title]="darkMode ? 'Modalita chiara' : 'Modalita scura'">
+        <mat-icon>{{darkMode ? 'light_mode' : 'dark_mode'}}</mat-icon>
+      </button>
       <button mat-button (click)="logout()">Esci</button>
     </ng-container>
  
     <ng-template #nonLoggato>
+      <button mat-icon-button (click)="toggleDark()"
+              [title]="darkMode ? 'Modalita chiara' : 'Modalita scura'">
+        <mat-icon>{{darkMode ? 'light_mode' : 'dark_mode'}}</mat-icon>
+      </button>
       <a mat-button routerLink="/login">Accedi</a>
       <a mat-button routerLink="/registra-passeggero">Registrati</a>
     </ng-template>
