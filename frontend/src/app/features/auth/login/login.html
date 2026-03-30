@@ -1,1 +1,33 @@
-<p>login works!</p>
+  <div class="form-container">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Accedi a CarPooling</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Il tuo ID</mat-label>
+          <input matInput type="number" [(ngModel)]="id">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Il tuo Nome</mat-label>
+          <input matInput [(ngModel)]="nome">
+        </mat-form-field>
+        <div class="tipo-scelta">
+          <label>
+            <input type="radio" [(ngModel)]="tipo" value="passeggero">
+            Passeggero
+          </label>
+          <label>
+            <input type="radio" [(ngModel)]="tipo" value="autista">
+            Autista
+          </label>
+        </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="accedi()">
+          Entra
+        </button>
+        <a mat-button routerLink="/registra-passeggero">Registrati</a>
+      </mat-card-actions>
+    </mat-card>
+  </div>

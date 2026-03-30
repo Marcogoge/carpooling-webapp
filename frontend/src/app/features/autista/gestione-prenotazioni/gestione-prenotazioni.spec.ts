@@ -8,7 +8,7 @@ describe('GestionePrenotazioni', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GestionePrenotazioni]
+      declarations: [GestionePrenotazioni]
     })
     .compileComponents();
 

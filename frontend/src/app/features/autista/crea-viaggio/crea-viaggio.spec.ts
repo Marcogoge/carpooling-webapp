@@ -8,7 +8,7 @@ describe('CreaViaggio', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CreaViaggio]
+      declarations: [CreaViaggio]
     })
     .compileComponents();
 

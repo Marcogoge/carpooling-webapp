@@ -1,1 +1,33 @@
-<p>dashboard-autista works!</p>
+ <div class="pagina">
+    <div class="header-pagina">
+      <h2>I tuoi viaggi, {{utente?.nome}}</h2>
+      <button mat-raised-button color="primary"
+              routerLink="/autista/crea-viaggio">
+        + Nuovo viaggio
+      </button>
+    </div>
+    <p *ngIf="viaggi.length===0">Nessun viaggio creato.</p>
+    <mat-card *ngFor="let v of viaggi" class="viaggio-card">
+      <mat-card-header>
+        <mat-card-title>{{v.citta_partenza}} -> {{v.citta_arrivo}}</mat-card-title>
+        <mat-card-subtitle>
+          {{v.data_ora_partenza | date:'dd/MM/yyyy HH:mm'}}
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Posti: {{v.posti_disponibili}}/{{v.posti_max}}</p>
+        <p>In attesa: {{v.prenotazioni_in_attesa}}</p>
+        <p>Contributo: EUR {{v.contributo}}</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button color="primary"
+                (click)="vaiPrenotazioni(v.id_viaggio)">
+          Gestisci prenotazioni
+        </button>
+        <button mat-button color="warn"
+                (click)="elimina(v.id_viaggio)">
+          Elimina
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>

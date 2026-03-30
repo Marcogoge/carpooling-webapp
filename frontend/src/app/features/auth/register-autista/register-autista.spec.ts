@@ -8,7 +8,7 @@ describe('RegisterAutista', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegisterAutista]
+      declarations: [RegisterAutista]
     })
     .compileComponents();
 

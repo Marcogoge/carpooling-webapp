@@ -1,1 +1,29 @@
-<p>gestione-prenotazioni works!</p>
+  <div class="pagina">
+    <h2>Gestione Prenotazioni</h2>
+    <p class="successo" *ngIf="messaggio">{{messaggio}}</p>
+    <mat-card class="filtro-card">
+      <mat-form-field appearance="outline">
+        <mat-label>Voto minimo passeggero (1-5)</mat-label>
+        <input matInput type="number" min="1" max="5" [(ngModel)]="votoMin">
+      </mat-form-field>
+      <button mat-button (click)="carica()">Filtra</button>
+    </mat-card>
+    <p *ngIf="prenotazioni.length===0">Nessuna prenotazione.</p>
+    <mat-card *ngFor="let p of prenotazioni" class="prenotazione-card">
+      <mat-card-header>
+        <mat-card-title>{{p.nome}} {{p.cognome}}</mat-card-title>
+        <mat-card-subtitle>
+          Voto medio: {{p.voto_medio ?? 'Nessun feedback'}}
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Stato: <strong>{{p.stato}}</strong></p>
+      </mat-card-content>
+      <mat-card-actions *ngIf="p.stato === 'attesa'">
+        <button mat-raised-button color="primary"
+                (click)="accetta(p.id_prenotazione)">Accetta</button>
+        <button mat-raised-button color="warn"
+                (click)="rifiuta(p.id_prenotazione)">Rifiuta</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>

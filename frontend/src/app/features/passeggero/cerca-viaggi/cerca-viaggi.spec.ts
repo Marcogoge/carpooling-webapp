@@ -8,7 +8,7 @@ describe('CercaViaggi', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CercaViaggi]
+      declarations: [CercaViaggi]
     })
     .compileComponents();
 

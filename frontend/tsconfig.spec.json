@@ -11,5 +11,5 @@
   "include": [
     "src/**/*.d.ts",
     "src/**/*.spec.ts"
-  ]
+, "src/app/core/services/feedback.service.ts", "src/app/core/services/auth.service.ts", "src/app/core/services/prenotazione.service.ts", "src/app/shared/navbar/navbar.component.ts", "src/app/features/autista/gestione-prenotazioni/gestione-prenotazioni.component.ts", "src/app/features/autista/crea-viaggio/crea-viaggio.component.ts", "src/app/features/autista/dashboard-autista/dashboard-autista.component.ts", "src/app/features/passeggero/dettaglio-viaggio/dettaglio-viaggio.component.ts", "src/app/features/passeggero/cerca-viaggi/cerca-viaggi.component.ts", "src/app/features/auth/login/login.component.ts", "src/app/features/auth/register-passeggero/register-passeggero.component.ts", "src/app/features/auth/register-autista/register-autista.component.ts", "src/app/features/passeggero/dashboard-passeggero/dashboard-passeggero.component.ts"  ]
 }

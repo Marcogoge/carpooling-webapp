@@ -8,7 +8,7 @@ describe('DashboardAutista', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DashboardAutista]
+      declarations: [DashboardAutista]
     })
     .compileComponents();
 
