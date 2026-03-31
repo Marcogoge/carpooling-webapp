@@ -1,8 +1,8 @@
   import { Component, OnInit } from '@angular/core';
-  import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+  import { ActivatedRoute, Router } from '@angular/router';
   import { CommonModule } from '@angular/common';
-  import { MatCardModule } from '@angular/material/card';
   import { MatButtonModule } from '@angular/material/button';
+  import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   import { ViaggioService } from '../../../core/services/viaggio.service';
   import { PrenotazioneService } from '../../../core/services/prenotazione.service';
   import { FeedbackService } from '../../../core/services/feedback.service';
@@ -11,13 +11,15 @@
   @Component({
     selector: 'app-dettaglio-viaggio',
     standalone: true,
-    imports: [CommonModule, RouterLink, MatCardModule, MatButtonModule],
+    imports: [CommonModule, MatButtonModule, MatProgressSpinnerModule],
     templateUrl: './dettaglio-viaggio.html'
   })
   export class DettaglioViaggioComponent implements OnInit {
     viaggio: any = null;
     feedback: any[] = [];
-    messaggio = ''; errore = '';
+    caricamento = true;
+    messaggio = '';
+    errore = '';
     utente: any;
  
     constructor(
@@ -32,9 +34,19 @@
     ngOnInit() {
       this.utente = this.auth.getUtente();
       const id = +this.route.snapshot.paramMap.get('id')!;
-      this.vs.getViaggio(id).subscribe((res: any) => this.viaggio = res.dati);
+      if (!id) { this.router.navigate(['/passeggero/cerca']); return; }
+      this.vs.getViaggio(id).subscribe({
+        next: (res: any) => {
+          this.viaggio = res.dati;
+          this.caricamento = false;
+        },
+        error: () => {
+          this.caricamento = false;
+          this.errore = 'Viaggio non trovato.';
+        }
+      });
       this.fs.getFeedbackAutista(id)
-        .subscribe((res: any) => this.feedback = res.dati);
+        .subscribe({ next: (res: any) => this.feedback = res.dati });
     }
  
     prenota() {
@@ -45,6 +57,9 @@
       });
     }
  
-    stelle(voto: number | null): number[] { return [1,2,3,4,5]; }
-    isPiena(s: number, v: number | null) { return v !== null && s <= Math.round(v); }
+    indietro() { this.router.navigate(['/passeggero/cerca']); }
+ 
+    isPiena(s: number, v: number|null) {
+      return v !== null && s <= Math.round(v);
+    }
   }

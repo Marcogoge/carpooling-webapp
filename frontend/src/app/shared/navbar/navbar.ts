@@ -9,8 +9,8 @@
   @Component({
     selector: 'app-navbar',
     standalone: true,
-    imports: [CommonModule, RouterLink, MatToolbarModule,
-              MatButtonModule, MatIconModule],
+    imports: [CommonModule, RouterLink,
+              MatToolbarModule, MatButtonModule, MatIconModule],
     templateUrl: './navbar.html'
   })
   export class NavbarComponent {
@@ -26,6 +26,6 @@
  
     logout() {
       this.auth.logout();
-      this.router.navigate(['/login']);
+      this.router.navigate(['/home']);
     }
   }

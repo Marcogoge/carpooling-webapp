@@ -1,5 +1,5 @@
   <mat-toolbar color="primary" class="navbar">
-    <span class="brand" routerLink="/">CarPooling</span>
+    <span class="brand" routerLink="/home">CarPooling</span>
     <span class="spacer"></span>
  
     <ng-container *ngIf="auth.isLoggedIn(); else nonLoggato">
@@ -12,22 +12,20 @@
  
       <ng-container *ngIf="auth.getUtente()?.tipo === 'passeggero'">
         <a mat-button routerLink="/passeggero/cerca">Cerca viaggi</a>
-        <a mat-button routerLink="/passeggero/dashboard">Le mie prenotazioni</a>
+        <a mat-button routerLink="/passeggero/dashboard">Prenotazioni</a>
       </ng-container>
  
-      <button mat-icon-button (click)="toggleDark()"
-              [title]="darkMode ? 'Modalita chiara' : 'Modalita scura'">
+      <button mat-icon-button (click)="toggleDark()" title="Cambia tema">
         <mat-icon>{{darkMode ? 'light_mode' : 'dark_mode'}}</mat-icon>
       </button>
       <button mat-button (click)="logout()">Esci</button>
     </ng-container>
  
     <ng-template #nonLoggato>
-      <button mat-icon-button (click)="toggleDark()"
-              [title]="darkMode ? 'Modalita chiara' : 'Modalita scura'">
+      <button mat-icon-button (click)="toggleDark()" title="Cambia tema">
         <mat-icon>{{darkMode ? 'light_mode' : 'dark_mode'}}</mat-icon>
       </button>
-      <a mat-button routerLink="/login">Accedi</a>
+      <a mat-button routerLink="/home">Accedi</a>
       <a mat-button routerLink="/registra-passeggero">Registrati</a>
     </ng-template>
   </mat-toolbar>

@@ -1,39 +1,68 @@
-  <div class="form-container">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Registrati come Passeggero</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <p class="successo" *ngIf="messaggio">{{messaggio}}</p>
-        <p class="errore" *ngIf="errore">{{errore}}</p>
-        <mat-form-field appearance="outline" class="full">
+  <!-- SCHERMATA SUCCESSO CON ID -->
+  <div class="form-page" *ngIf="idRicevuto">
+    <div class="form-box" style="text-align:center">
+      <div style="font-size:2.5rem; margin-bottom:16px">&#10003;</div>
+      <h2 style="margin-bottom:8px">Registrazione completata</h2>
+      <p class="subtitle">Conserva il tuo ID per accedere alla piattaforma.</p>
+      <div class="id-box">
+        <div class="id-label">Il tuo ID passeggero</div>
+        <div class="id-numero">{{idRicevuto}}</div>
+        <div class="id-note">Annotalo — ti servira per fare login</div>
+      </div>
+      <button mat-raised-button color="primary"
+              class="btn-full" (click)="vai()">Vai al login</button>
+    </div>
+  </div>
+ 
+  <!-- FORM REGISTRAZIONE -->
+  <div class="form-page" *ngIf="!idRicevuto">
+    <div class="form-box">
+      <h2>Registrazione Passeggero</h2>
+      <p class="subtitle">Crea il tuo profilo per prenotare un viaggio</p>
+ 
+      <div class="alert alert-error" *ngIf="errore">{{errore}}</div>
+ 
+      <div class="form-row">
+        <mat-form-field appearance="outline">
           <mat-label>Nome</mat-label>
           <input matInput [(ngModel)]="form.nome">
         </mat-form-field>
-        <mat-form-field appearance="outline" class="full">
+        <mat-form-field appearance="outline">
           <mat-label>Cognome</mat-label>
           <input matInput [(ngModel)]="form.cognome">
         </mat-form-field>
-        <mat-form-field appearance="outline" class="full">
-          <mat-label>Documento di Identita</mat-label>
-          <input matInput [(ngModel)]="form.documento_identita">
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="full">
-          <mat-label>Telefono</mat-label>
-          <input matInput [(ngModel)]="form.telefono">
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="full">
-          <mat-label>Email</mat-label>
-          <input matInput type="email" [(ngModel)]="form.email">
-        </mat-form-field>
-      </mat-card-content>
-      <mat-card-actions>
+      </div>
+ 
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Documento di identita</mat-label>
+        <input matInput [(ngModel)]="form.documento_identita">
+      </mat-form-field>
+ 
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Telefono</mat-label>
+        <input matInput [(ngModel)]="form.telefono">
+      </mat-form-field>
+ 
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" [(ngModel)]="form.email">
+      </mat-form-field>
+ 
+      <div class="form-actions">
         <button mat-raised-button color="primary"
+                class="btn-full"
                 (click)="registra()" [disabled]="caricamento">
-          <mat-spinner *ngIf="caricamento" diameter="20"></mat-spinner>
-          <span *ngIf="!caricamento">Registrati</span>
+          {{caricamento ? 'Registrazione...' : 'Registrati'}}
         </button>
-        <a mat-button routerLink="/registra-autista">Sei un autista?</a>
-      </mat-card-actions>
-    </mat-card>
+      </div>
+ 
+      <div class="form-link">
+        Sei un autista?
+        <a routerLink="/registra-autista">Registrati qui</a>
+      </div>
+      <div class="form-link" style="margin-top:6px">
+        Hai gia un account?
+        <a routerLink="/login">Accedi</a>
+      </div>
+    </div>
   </div>

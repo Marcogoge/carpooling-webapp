@@ -1,8 +1,8 @@
- <div class="pagina">
-    <h2>Cerca un viaggio</h2>
+ <div class="contenuto">
+    <div class="pagina-titolo">Cerca un viaggio</div>
  
-    <div class="search-card">
-      <div class="search-row">
+    <div class="search-box">
+      <div class="search-grid">
         <mat-form-field appearance="outline">
           <mat-label>Citta di partenza</mat-label>
           <input matInput [(ngModel)]="partenza" placeholder="es. Milano">
@@ -14,71 +14,50 @@
         <mat-form-field appearance="outline">
           <mat-label>Data</mat-label>
           <input matInput [matDatepicker]="picker"
-                 [(ngModel)]="dataSelezionata"
-                 placeholder="Seleziona data">
+                 [(ngModel)]="dataObj" placeholder="Seleziona">
           <mat-datepicker-toggle matIconSuffix [for]="picker">
           </mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
         <button mat-raised-button color="primary"
-                style="height:56px; margin-top:0"
+                style="height:56px"
                 (click)="cerca()">Cerca</button>
       </div>
     </div>
  
-    <mat-spinner *ngIf="caricamento" diameter="40"
-                 style="margin:40px auto"></mat-spinner>
+    <mat-spinner *ngIf="caricamento" diameter="36"
+                 style="margin:32px auto"></mat-spinner>
  
-    <div *ngIf="cercato && viaggi.length===0" class="empty-state">
+    <div *ngIf="cercato && viaggi.length===0" class="empty">
       <p>Nessun viaggio trovato per i criteri selezionati.</p>
     </div>
  
-    <mat-card *ngFor="let v of viaggi"
-              class="viaggio-card"
-              (click)="vaiDettaglio(v.id_viaggio)">
-      <mat-card-content style="padding:20px">
-        <div class="rotta">
-          <span>{{v.citta_partenza}}</span>
-          <span class="rotta-arrow">&#8594;</span>
-          <span>{{v.citta_arrivo}}</span>
-        </div>
-        <div class="card-info">
-          <div class="info-item">
-            <span class="info-label">Data e ora</span>
-            <span class="info-value">
-              {{v.data_ora_partenza | date:'dd MMM yyyy, HH:mm'}}
+    <div *ngFor="let v of viaggi"
+         class="viaggio-card"
+         (click)="vaiDettaglio(v.id_viaggio)">
+      <div class="card-rotta">
+        <span>{{v.citta_partenza}}</span>
+        <span class="freccia">&#8594;</span>
+        <span>{{v.citta_arrivo}}</span>
+      </div>
+      <div class="card-meta">
+        <span class="chip">
+          {{v.data_ora_partenza | date:'dd MMM yyyy, HH:mm'}}
+        </span>
+        <span class="chip chip-green">{{v.posti_disponibili}} posti</span>
+        <span class="chip chip-blue">EUR {{v.contributo}}</span>
+        <span class="chip">{{v.marca_auto}} {{v.modello_auto}}</span>
+        <span class="chip">{{v.nome}} {{v.cognome}}</span>
+        <span class="chip" *ngIf="v.voto_medio_autista">
+          <span class="stelle">
+            <span *ngFor="let s of [1,2,3,4,5]"
+                  class="stella"
+                  [class.piena]="isPiena(s, v.voto_medio_autista)">
+              &#9733;
             </span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Posti</span>
-            <span class="badge badge-green">{{v.posti_disponibili}} disponibili</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Contributo</span>
-            <span class="info-value">EUR {{v.contributo}}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Auto</span>
-            <span class="info-value">{{v.marca_auto}} {{v.modello_auto}}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Autista</span>
-            <span class="info-value">{{v.nome}} {{v.cognome}}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Valutazione</span>
-            <div class="stelle">
-              <span *ngFor="let s of stelle(v.voto_medio_autista)"
-                    class="stella"
-                    [class.piena]="isPiena(s, v.voto_medio_autista)">
-                &#9733;
-              </span>
-              <span class="voto-numero" *ngIf="v.voto_medio_autista">
-                {{v.voto_medio_autista | number:'1.1-1'}}
-              </span>
-            </div>
-          </div>
-        </div>
-      </mat-card-content>
-    </mat-card>
+          </span>
+          {{v.voto_medio_autista | number:'1.1-1'}}
+        </span>
+      </div>
+    </div>
   </div>

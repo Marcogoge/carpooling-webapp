@@ -1,111 +1,133 @@
-  <div class="pagina" *ngIf="viaggio">
-    <div class="rotta" style="font-size:1.8rem; margin-bottom:24px">
-      <span>{{viaggio.citta_partenza}}</span>
-      <span class="rotta-arrow">&#8594;</span>
-      <span>{{viaggio.citta_arrivo}}</span>
+ <div class="contenuto">
+    <mat-spinner *ngIf="caricamento" diameter="36"
+                 style="margin:40px auto"></mat-spinner>
+ 
+    <div class="alert alert-error" *ngIf="errore && !viaggio">
+      {{errore}}
     </div>
  
-    <div class="dettaglio-card">
-      <div class="dettaglio-grid">
-        <div class="info-item">
-          <span class="info-label">Data e ora</span>
-          <span class="info-value">
-            {{viaggio.data_ora_partenza | date:'dd MMMM yyyy, HH:mm'}}
-          </span>
-        </div>
-        <div class="info-item">
-          <span class="info-label">Durata stimata</span>
-          <span class="info-value">{{viaggio.tempo_stimato}} min</span>
-        </div>
-        <div class="info-item">
-          <span class="info-label">Contributo</span>
-          <span class="info-value">EUR {{viaggio.contributo}}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-label">Posti disponibili</span>
-          <span class="badge badge-green">{{viaggio.posti_disponibili}}</span>
-        </div>
-        <div class="info-item" *ngIf="viaggio.soste">
-          <span class="info-label">Soste</span>
-          <span class="info-value">{{viaggio.soste}}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-label">Bagaglio</span>
-          <span class="badge"
-                [class.badge-green]="viaggio.bagaglio"
-                [class.badge-red]="!viaggio.bagaglio">
-            {{viaggio.bagaglio ? 'Ammesso' : 'Non ammesso'}}
-          </span>
-        </div>
-        <div class="info-item">
-          <span class="info-label">Animali</span>
-          <span class="badge"
-                [class.badge-green]="viaggio.animali"
-                [class.badge-red]="!viaggio.animali">
-            {{viaggio.animali ? 'Ammessi' : 'Non ammessi'}}
-          </span>
-        </div>
-        <div class="info-item">
-          <span class="info-label">Automobile</span>
-          <span class="info-value">
-            {{viaggio.marca_auto}} {{viaggio.modello_auto}}
-            ({{viaggio.targa_auto}})
-          </span>
-        </div>
-      </div>
+    <div *ngIf="viaggio && !caricamento">
  
-      <hr class="divider">
+      <button mat-button color="primary"
+              (click)="indietro()"
+              style="margin-bottom:16px; padding-left:0">
+        &#8592; Torna ai risultati
+      </button>
  
-      <div style="display:flex; justify-content:space-between; align-items:center">
-        <div>
-          <div class="info-label">Autista</div>
-          <div class="info-value" style="font-size:1.1rem">
-            {{viaggio.nome}} {{viaggio.cognome}}
+      <div class="dettaglio-box">
+        <div class="dettaglio-rotta">
+          <span>{{viaggio.citta_partenza}}</span>
+          <span class="freccia" style="font-size:1.6rem">&#8594;</span>
+          <span>{{viaggio.citta_arrivo}}</span>
+        </div>
+ 
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="label">Data e ora</div>
+            <div class="value">
+              {{viaggio.data_ora_partenza | date:'dd MMMM yyyy, HH:mm'}}
+            </div>
           </div>
-          <div class="stelle" style="margin-top:4px">
-            <span *ngFor="let s of stelle(viaggio.voto_medio_autista)"
-                  class="stella"
-                  [class.piena]="isPiena(s, viaggio.voto_medio_autista)">
-              &#9733;
+          <div class="info-item">
+            <div class="label">Durata stimata</div>
+            <div class="value">{{viaggio.tempo_stimato}} min</div>
+          </div>
+          <div class="info-item">
+            <div class="label">Contributo</div>
+            <div class="value">EUR {{viaggio.contributo}}</div>
+          </div>
+          <div class="info-item">
+            <div class="label">Posti disponibili</div>
+            <div class="value">
+              <span class="chip chip-green">{{viaggio.posti_disponibili}}</span>
+            </div>
+          </div>
+          <div class="info-item" *ngIf="viaggio.soste">
+            <div class="label">Soste previste</div>
+            <div class="value">{{viaggio.soste}}</div>
+          </div>
+          <div class="info-item">
+            <div class="label">Automobile</div>
+            <div class="value">
+              {{viaggio.marca_auto}} {{viaggio.modello_auto}}
+              ({{viaggio.targa_auto}})
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="label">Bagaglio</div>
+            <span class="chip"
+                  [class.chip-green]="viaggio.bagaglio"
+                  [class.chip-red]="!viaggio.bagaglio">
+              {{viaggio.bagaglio ? 'Ammesso' : 'Non ammesso'}}
             </span>
-            <span class="voto-numero" *ngIf="viaggio.voto_medio_autista">
-              {{viaggio.voto_medio_autista | number:'1.1-1'}}
-            </span>
-            <span class="voto-numero" *ngIf="!viaggio.voto_medio_autista">
-              Nessun voto
+          </div>
+          <div class="info-item">
+            <div class="label">Animali</div>
+            <span class="chip"
+                  [class.chip-green]="viaggio.animali"
+                  [class.chip-red]="!viaggio.animali">
+              {{viaggio.animali ? 'Ammessi' : 'Non ammessi'}}
             </span>
           </div>
         </div>
-        <button mat-raised-button color="primary"
-                style="padding: 8px 24px"
-                (click)="prenota()">
-          Prenota questo viaggio
-        </button>
+ 
+        <hr class="divider">
+ 
+        <div class="autista-row">
+          <div>
+            <div class="label" style="font-size:0.75rem; font-weight:600;
+                 text-transform:uppercase; letter-spacing:0.6px;
+                 color:var(--text-muted); margin-bottom:4px">Autista</div>
+            <div style="font-weight:700; font-size:1.05rem">
+              {{viaggio.nome}} {{viaggio.cognome}}
+            </div>
+            <div class="stelle" style="margin-top:6px">
+              <span *ngFor="let s of [1,2,3,4,5]"
+                    class="stella"
+                    [class.piena]="isPiena(s, viaggio.voto_medio_autista)">
+                &#9733;
+              </span>
+              <span class="voto-txt" *ngIf="viaggio.voto_medio_autista">
+                {{viaggio.voto_medio_autista | number:'1.1-1'}}
+              </span>
+              <span class="voto-txt" *ngIf="!viaggio.voto_medio_autista">
+                Nessun voto
+              </span>
+            </div>
+          </div>
+ 
+          <button mat-raised-button color="primary"
+                  style="padding:10px 28px; font-size:0.95rem"
+                  (click)="prenota()"
+                  [disabled]="!!messaggio">
+            Prenota questo viaggio
+          </button>
+        </div>
       </div>
-    </div>
  
-    <div class="msg-successo" *ngIf="messaggio">{{messaggio}}</div>
-    <div class="msg-errore" *ngIf="errore">{{errore}}</div>
+      <div class="alert alert-success" *ngIf="messaggio">{{messaggio}}</div>
+      <div class="alert alert-error"   *ngIf="errore && viaggio">{{errore}}</div>
  
-    <div class="section-title" style="margin-top:32px">
-      Recensioni sull'autista
-    </div>
- 
-    <div *ngIf="feedback.length===0" class="empty-state">
-      <p>Ancora nessuna recensione per questo autista.</p>
-    </div>
- 
-    <div *ngFor="let f of feedback" class="feedback-card">
-      <div class="stelle">
-        <span *ngFor="let s of stelle(f.voto)"
-              class="stella" [class.piena]="isPiena(s, f.voto)">
-          &#9733;
-        </span>
+      <!-- FEEDBACK -->
+      <div class="sezione-titolo" style="margin-top:32px">
+        Recensioni sull'autista
       </div>
-      <p style="margin:8px 0">{{f.giudizio}}</p>
-      <div class="feedback-autore">
-        {{f.autore_nome}} {{f.autore_cognome}} &mdash;
-        {{f.data_ora_partenza | date:'dd MMM yyyy'}}
+ 
+      <div *ngIf="feedback.length===0" class="empty" style="padding:24px 0">
+        <p>Ancora nessuna recensione per questo autista.</p>
+      </div>
+ 
+      <div *ngFor="let f of feedback" class="feedback-item">
+        <div class="stelle">
+          <span *ngFor="let s of [1,2,3,4,5]"
+                class="stella"
+                [class.piena]="isPiena(s, f.voto)">&#9733;</span>
+          <span class="voto-txt">{{f.voto}}/5</span>
+        </div>
+        <div class="feedback-testo">{{f.giudizio}}</div>
+        <div class="feedback-autore">
+          {{f.autore_nome}} {{f.autore_cognome}}
+        </div>
       </div>
     </div>
   </div>

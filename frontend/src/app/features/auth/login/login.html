@@ -1,113 +1,91 @@
-  <!-- HERO SECTION -->
+<!-- HERO -->
   <div class="hero">
-    <h1>Viaggia insieme, spendi meno</h1>
-    <p>La piattaforma di car pooling per chi vuole spostarsi
-       in modo intelligente e sostenibile.</p>
-    <div class="hero-buttons">
-      <button mat-raised-button color="accent"
-              (click)="mostraLogin = true">Accedi</button>
-      <button mat-stroked-button style="color:white; border-color:white"
-              routerLink="/registra-passeggero">Registrati gratis</button>
+    <div class="hero-title">Viaggia insieme, spendi meno</div>
+    <div class="hero-sub">
+      La piattaforma di car pooling per una mobilita sostenibile e intelligente.
+    </div>
+    <div class="hero-actions">
+      <button class="btn-primary" (click)="mostraLogin = true">Accedi</button>
+      <button class="btn-outline" routerLink="/registra-passeggero">
+        Registrati gratis
+      </button>
     </div>
   </div>
  
-  <!-- FORM LOGIN (nascosto di default) -->
+  <!-- LOGIN FORM -->
   <div class="contenuto" *ngIf="mostraLogin">
-    <div class="form-container" style="padding:0; margin-bottom:40px">
-      <mat-card class="form-card">
-        <mat-card-header>
-          <mat-card-title>Accedi</mat-card-title>
-        </mat-card-header>
-        <mat-card-content style="padding-top:16px">
-          <mat-form-field appearance="outline" class="full">
-            <mat-label>Il tuo ID</mat-label>
-            <input matInput type="number" [(ngModel)]="id">
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="full">
-            <mat-label>Il tuo Nome</mat-label>
-            <input matInput [(ngModel)]="nome">
-          </mat-form-field>
-          <div class="tipo-scelta">
-            <button class="tipo-option"
-                    [class.attivo]="tipo==='passeggero'"
-                    (click)="tipo='passeggero'">Passeggero</button>
-            <button class="tipo-option"
-                    [class.attivo]="tipo==='autista'"
-                    (click)="tipo='autista'">Autista</button>
-          </div>
-        </mat-card-content>
-        <mat-card-actions style="padding:0 16px 16px">
+    <div style="max-width:440px; margin:0 auto 40px">
+      <div class="form-box">
+        <h2>Accedi</h2>
+        <p class="subtitle">Inserisci il tuo ID e nome per entrare</p>
+ 
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>ID utente</mat-label>
+          <input matInput type="number" [(ngModel)]="id">
+        </mat-form-field>
+ 
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Nome</mat-label>
+          <input matInput [(ngModel)]="nome">
+        </mat-form-field>
+ 
+        <div class="toggle-tipo">
+          <button class="toggle-opt"
+                  [class.attivo]="tipo==='passeggero'"
+                  (click)="tipo='passeggero'">Passeggero</button>
+          <button class="toggle-opt"
+                  [class.attivo]="tipo==='autista'"
+                  (click)="tipo='autista'">Autista</button>
+        </div>
+ 
+        <div class="form-actions">
           <button mat-raised-button color="primary"
-                  style="width:100%" (click)="accedi()">Entra</button>
-        </mat-card-actions>
-      </mat-card>
+                  class="btn-full" (click)="accedi()">Entra</button>
+        </div>
+ 
+        <div class="form-link" style="margin-top:16px">
+          Non hai un account?
+          <a routerLink="/registra-passeggero">Registrati</a>
+        </div>
+      </div>
     </div>
   </div>
  
   <!-- VIAGGI IN EVIDENZA -->
   <div class="contenuto">
-    <div class="section-title">Viaggi disponibili</div>
+    <div class="sezione">
+      <div class="sezione-titolo">Viaggi disponibili</div>
  
-    <div *ngIf="viaggiInEvidenza.length === 0" class="empty-state">
-      <p>Nessun viaggio disponibile al momento.</p>
-      <button mat-stroked-button routerLink="/registra-autista">
-        Sei un autista? Offri un passaggio
-      </button>
-    </div>
+      <div *ngIf="viaggi.length === 0" class="empty">
+        <p>Nessun viaggio disponibile al momento.</p>
+      </div>
  
-    <mat-card *ngFor="let v of viaggiInEvidenza"
-              class="viaggio-card"
-              (click)="vaiDettaglio(v.id_viaggio)">
-      <mat-card-content style="padding:20px">
-        <div class="rotta">
+      <div *ngFor="let v of viaggi"
+           class="viaggio-card"
+           (click)="vaiDettaglio(v.id_viaggio)">
+        <div class="card-rotta">
           <span>{{v.citta_partenza}}</span>
-          <span class="rotta-arrow">&#8594;</span>
+          <span class="freccia">&#8594;</span>
           <span>{{v.citta_arrivo}}</span>
         </div>
-        <div class="card-info">
-          <div class="info-item">
-            <span class="info-label">Data</span>
-            <span class="info-value">
-              {{v.data_ora_partenza | date:'dd MMM yyyy, HH:mm'}}
-            </span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Posti</span>
-            <span class="info-value">
-              <span class="badge badge-green">{{v.posti_disponibili}} disponibili</span>
-            </span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Contributo</span>
-            <span class="info-value">EUR {{v.contributo}}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Autista</span>
-            <span class="info-value">{{v.nome}} {{v.cognome}}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Valutazione</span>
-            <div class="stelle">
-              <span *ngFor="let s of stelle(v.voto_medio_autista)"
-                    class="stella"
+        <div class="card-meta">
+          <span class="chip">
+            {{v.data_ora_partenza | date:'dd MMM yyyy, HH:mm'}}
+          </span>
+          <span class="chip chip-green">
+            {{v.posti_disponibili}} posti
+          </span>
+          <span class="chip chip-blue">EUR {{v.contributo}}</span>
+          <span class="chip">{{v.nome}} {{v.cognome}}</span>
+          <span class="chip" *ngIf="v.voto_medio_autista">
+            <span class="stelle">
+              <span *ngFor="let s of [1,2,3,4,5]" class="stella"
                     [class.piena]="isPiena(s, v.voto_medio_autista)">
                 &#9733;
               </span>
-              <span class="voto-numero"
-                    *ngIf="v.voto_medio_autista">
-                {{v.voto_medio_autista | number:'1.1-1'}}
-              </span>
-            </div>
-          </div>
+            </span>
+          </span>
         </div>
-      </mat-card-content>
-    </mat-card>
- 
-    <div style="text-align:center; margin-top:24px"
-         *ngIf="viaggiInEvidenza.length > 0">
-      <button mat-stroked-button color="primary"
-              (click)="mostraLogin = true">
-        Accedi per vedere tutti i viaggi e prenotare
-      </button>
+      </div>
     </div>
   </div>

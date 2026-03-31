@@ -23,7 +23,7 @@
     nome = '';
     tipo: 'autista' | 'passeggero' = 'passeggero';
     mostraLogin = false;
-    viaggiInEvidenza: any[] = [];
+    viaggi: any[] = [];
  
     constructor(
       private auth: AuthService,
@@ -32,19 +32,15 @@
     ) {}
  
     ngOnInit() {
-      // Se gia loggato vai alla dashboard
       if (this.auth.isLoggedIn()) {
         const u = this.auth.getUtente();
-        this.router.navigate([u.tipo === 'autista'
-          ? '/autista/dashboard' : '/passeggero/cerca']);
+        this.router.navigate([
+          u.tipo === 'autista' ? '/autista/dashboard' : '/passeggero/cerca'
+        ]);
         return;
       }
-      // Carica qualche viaggio da mostrare in homepage
       this.vs.getViaggi().subscribe({
-        next: (res: any) => {
-          const tutti = res.dati || [];
-          this.viaggiInEvidenza = tutti.slice(0, 3);
-        }
+        next: (res: any) => this.viaggi = (res.dati || []).slice(0, 4)
       });
     }
  
@@ -63,11 +59,7 @@
       this.router.navigate(['/passeggero/viaggio', id]);
     }
  
-    stelle(voto: number | null): number[] {
-      return [1,2,3,4,5];
-    }
- 
-    isPiena(stella: number, voto: number | null): boolean {
-      return voto !== null && stella <= Math.round(voto);
+    isPiena(s: number, v: number|null) {
+      return v !== null && s <= Math.round(v);
     }
   }

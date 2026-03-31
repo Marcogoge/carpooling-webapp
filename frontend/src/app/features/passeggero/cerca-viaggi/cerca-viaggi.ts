@@ -1,8 +1,7 @@
- import { Component } from '@angular/core';
-  import { Router, RouterLink } from '@angular/router';
+  import { Component } from '@angular/core';
+  import { Router } from '@angular/router';
   import { CommonModule } from '@angular/common';
   import { FormsModule } from '@angular/forms';
-  import { MatCardModule } from '@angular/material/card';
   import { MatFormFieldModule } from '@angular/material/form-field';
   import { MatInputModule } from '@angular/material/input';
   import { MatButtonModule } from '@angular/material/button';
@@ -14,16 +13,15 @@
   @Component({
     selector: 'app-cerca-viaggi',
     standalone: true,
-    imports: [CommonModule, FormsModule, RouterLink,
-              MatCardModule, MatFormFieldModule, MatInputModule,
-              MatButtonModule, MatProgressSpinnerModule,
-              MatDatepickerModule, MatNativeDateModule],
+    imports: [CommonModule, FormsModule,
+              MatFormFieldModule, MatInputModule, MatButtonModule,
+              MatProgressSpinnerModule, MatDatepickerModule, MatNativeDateModule],
     templateUrl: './cerca-viaggi.html'
   })
   export class CercaViaggiComponent {
     partenza = '';
     arrivo = '';
-    dataSelezionata: Date | null = null;
+    dataObj: Date | null = null;
     viaggi: any[] = [];
     cercato = false;
     caricamento = false;
@@ -33,8 +31,8 @@
     cerca() {
       this.caricamento = true;
       let dataStr = '';
-      if (this.dataSelezionata) {
-        const d = this.dataSelezionata;
+      if (this.dataObj) {
+        const d = this.dataObj;
         dataStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
       }
       this.vs.getViaggi(this.partenza, this.arrivo, dataStr).subscribe({
@@ -51,11 +49,7 @@
       this.router.navigate(['/passeggero/viaggio', id]);
     }
  
-    stelle(voto: number | null): number[] {
-      return [1,2,3,4,5];
-    }
- 
-    isPiena(stella: number, voto: number | null): boolean {
-      return voto !== null && stella <= Math.round(voto);
+    isPiena(s: number, v: number|null) {
+      return v !== null && s <= Math.round(v);
     }
   }

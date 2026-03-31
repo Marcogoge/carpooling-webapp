@@ -10,15 +10,16 @@
   import { DashboardPasseggeroComponent } from './features/passeggero/dashboard-passeggero/dashboard-passeggero';
  
   export const routes: Routes = [
-    { path: '',                       redirectTo: '/login', pathMatch: 'full' },
-    { path: 'login',                  component: LoginComponent },
-    { path: 'registra-autista',       component: RegisterAutistaComponent },
-    { path: 'registra-passeggero',    component: RegisterPasseggeroComponent },
-    { path: 'autista/dashboard',      component: DashboardAutistaComponent },
-    { path: 'autista/crea-viaggio',   component: CreaViaggioComponent },
-    { path: 'autista/prenotazioni/:id', component: GestionePrenotazioniComponent },
-    { path: 'passeggero/cerca',       component: CercaViaggiComponent },
-    { path: 'passeggero/viaggio/:id', component: DettaglioViaggioComponent },
-    { path: 'passeggero/dashboard',   component: DashboardPasseggeroComponent },
-    { path: '**',                     redirectTo: '/login' }
+    { path: '',                        redirectTo: '/home', pathMatch: 'full' },
+    { path: 'home',                    component: LoginComponent },
+    { path: 'login',                   component: LoginComponent },
+    { path: 'registra-autista',        component: RegisterAutistaComponent },
+    { path: 'registra-passeggero',     component: RegisterPasseggeroComponent },
+    { path: 'autista/dashboard',       component: DashboardAutistaComponent },
+    { path: 'autista/crea-viaggio',    component: CreaViaggioComponent },
+    { path: 'autista/prenotazioni/:id',component: GestionePrenotazioniComponent },
+    { path: 'passeggero/cerca',        component: CercaViaggiComponent },
+    { path: 'passeggero/viaggio/:id',  component: DettaglioViaggioComponent },
+    { path: 'passeggero/dashboard',    component: DashboardPasseggeroComponent },
+    { path: '**',                      redirectTo: '/home' }
   ];
