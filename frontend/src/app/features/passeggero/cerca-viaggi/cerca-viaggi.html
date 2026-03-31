@@ -1,63 +1,30 @@
- <div class="contenuto">
-    <div class="pagina-titolo">Cerca un viaggio</div>
- 
-    <div class="search-box">
-      <div class="search-grid">
-        <mat-form-field appearance="outline">
-          <mat-label>Citta di partenza</mat-label>
-          <input matInput [(ngModel)]="partenza" placeholder="es. Milano">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Citta di arrivo</mat-label>
-          <input matInput [(ngModel)]="arrivo" placeholder="es. Roma">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Data</mat-label>
-          <input matInput [matDatepicker]="picker"
-                 [(ngModel)]="dataObj" placeholder="Seleziona">
-          <mat-datepicker-toggle matIconSuffix [for]="picker">
-          </mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-        <button mat-raised-button color="primary"
-                style="height:56px"
-                (click)="cerca()">Cerca</button>
-      </div>
+ <div class="page-title">Cerca un viaggio</div>
+  <div class="search-box">
+    <div class="search-grid">
+      <mat-form-field appearance="outline"><mat-label>Partenza</mat-label><input matInput [(ngModel)]="partenza" placeholder="es. Milano"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Arrivo</mat-label><input matInput [(ngModel)]="arrivo" placeholder="es. Roma"></mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Data</mat-label>
+        <input matInput [matDatepicker]="dp" [(ngModel)]="dataObj" placeholder="Seleziona">
+        <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
+        <mat-datepicker #dp></mat-datepicker>
+      </mat-form-field>
+      <button mat-raised-button color="primary" style="height:56px" (click)="cerca()">Cerca</button>
     </div>
- 
-    <mat-spinner *ngIf="caricamento" diameter="36"
-                 style="margin:32px auto"></mat-spinner>
- 
-    <div *ngIf="cercato && viaggi.length===0" class="empty">
-      <p>Nessun viaggio trovato per i criteri selezionati.</p>
-    </div>
- 
-    <div *ngFor="let v of viaggi"
-         class="viaggio-card"
-         (click)="vaiDettaglio(v.id_viaggio)">
-      <div class="card-rotta">
-        <span>{{v.citta_partenza}}</span>
-        <span class="freccia">&#8594;</span>
-        <span>{{v.citta_arrivo}}</span>
-      </div>
-      <div class="card-meta">
-        <span class="chip">
-          {{v.data_ora_partenza | date:'dd MMM yyyy, HH:mm'}}
-        </span>
-        <span class="chip chip-green">{{v.posti_disponibili}} posti</span>
-        <span class="chip chip-blue">EUR {{v.contributo}}</span>
-        <span class="chip">{{v.marca_auto}} {{v.modello_auto}}</span>
-        <span class="chip">{{v.nome}} {{v.cognome}}</span>
-        <span class="chip" *ngIf="v.voto_medio_autista">
-          <span class="stelle">
-            <span *ngFor="let s of [1,2,3,4,5]"
-                  class="stella"
-                  [class.piena]="isPiena(s, v.voto_medio_autista)">
-              &#9733;
-            </span>
-          </span>
-          {{v.voto_medio_autista | number:'1.1-1'}}
-        </span>
-      </div>
+  </div>
+  <mat-spinner *ngIf="caricamento" diameter="32" style="margin:32px auto"></mat-spinner>
+  <div *ngIf="cercato&&viaggi.length===0" class="empty"><p>Nessun viaggio trovato.</p></div>
+  <div *ngFor="let v of viaggi" class="trip-card" (click)="vai(v.id_viaggio)">
+    <div class="trip-route"><span>{{v.citta_partenza}}</span><span class="trip-arrow">&#8594;</span><span>{{v.citta_arrivo}}</span></div>
+    <div class="trip-meta">
+      <span class="chip">{{v.data_ora_partenza|date:'dd MMM yyyy, HH:mm'}}</span>
+      <span class="chip chip-green">{{v.posti_disponibili}} posti</span>
+      <span class="chip chip-blue">EUR {{v.contributo}}</span>
+      <span class="chip">{{v.marca_auto}} {{v.modello_auto}}</span>
+      <span class="chip">{{v.nome}} {{v.cognome}}</span>
+      <span class="chip" *ngIf="v.voto_medio_autista">
+        <span class="stelle"><span *ngFor="let s of [1,2,3,4,5]" class="stella" [class.piena]="isPiena(s,v.voto_medio_autista)">&#9733;</span></span>
+        {{v.voto_medio_autista|number:'1.1-1'}}
+      </span>
     </div>
   </div>

@@ -1,4 +1,4 @@
-  import { Component } from '@angular/core';
+  import { Component, ChangeDetectorRef } from '@angular/core';
   import { RouterOutlet } from '@angular/router';
   import { NavbarComponent } from './shared/navbar/navbar';
  
@@ -12,8 +12,12 @@
   export class AppComponent {
     darkMode = false;
  
+    constructor(private cdr: ChangeDetectorRef) {}
+ 
     toggleDark() {
       this.darkMode = !this.darkMode;
       document.body.classList.toggle('dark-mode', this.darkMode);
+      // FIX: forza Angular a rilevare i cambiamenti
+      this.cdr.detectChanges();
     }
   }

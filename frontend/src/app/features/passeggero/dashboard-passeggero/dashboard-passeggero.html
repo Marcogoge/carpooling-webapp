@@ -1,24 +1,34 @@
-  <div class="pagina">
-    <h2>Le tue prenotazioni, {{utente?.nome}}</h2>
-    <p *ngIf="prenotazioni.length===0">
-      Nessuna prenotazione.
-      <a routerLink="/passeggero/cerca">Cerca un viaggio!</a>
-    </p>
-    <mat-card *ngFor="let p of prenotazioni" class="prenotazione-card">
-      <mat-card-header>
-        <mat-card-title>{{p.citta_partenza}} -> {{p.citta_arrivo}}</mat-card-title>
-        <mat-card-subtitle>
-          {{p.data_ora_partenza | date:'dd/MM/yyyy HH:mm'}}
-        </mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <p>Autista: {{p.nome_autista}} {{p.cog_autista}}</p>
-        <p>Contributo: EUR {{p.contributo}}</p>
-        <p>Stato: <strong
-             [style.color]="p.stato==='accettata' ? 'green' :
-                            p.stato==='rifiutata'  ? 'red'   : 'orange'">
-            {{p.stato}}
-          </strong></p>
-      </mat-card-content>
-    </mat-card>
+  <div class="page-title">Le mie prenotazioni</div>
+  <mat-spinner *ngIf="caricamento" diameter="32" style="margin:40px auto"></mat-spinner>
+  <div *ngIf="!caricamento&&prenotazioni.length===0" class="empty">
+    <p>Nessuna prenotazione ancora.</p>
+    <button mat-stroked-button color="primary" routerLink="/passeggero/cerca">Cerca un viaggio</button>
+  </div>
+  <div *ngFor="let p of prenotazioni" class="pren-card">
+    <div class="pren-header">
+      <div>
+        <div class="trip-route" style="font-size:1rem;margin-bottom:4px">
+          <span>{{p.citta_partenza}}</span>
+          <span class="trip-arrow">&#8594;</span>
+          <span>{{p.citta_arrivo}}</span>
+        </div>
+        <div style="font-size:.82rem;color:var(--text-muted)">{{p.data_ora_partenza|date:'dd MMM yyyy, HH:mm'}}</div>
+        <div style="font-size:.82rem;color:var(--text-muted);margin-top:2px">
+          Autista: {{p.nome_autista}} {{p.cog_autista}} &nbsp;|&nbsp; EUR {{p.contributo}}
+        </div>
+      </div>
+      <span class="chip"
+            [class.chip-green]="p.stato==='accettata'"
+            [class.chip-red]="p.stato==='rifiutata'"
+            [class.chip-yellow]="p.stato==='attesa'">
+        {{p.stato}}
+      </span>
+    </div>
+    <!-- Feedback solo per prenotazioni accettate, usa p.id_autista dal DB -->
+    <div class="pren-actions" *ngIf="p.stato==='accettata'">
+      <button mat-stroked-button color="primary"
+              (click)="lasiciaFeedback(p.id_viaggio, p.id_autista)">
+        Lascia una recensione
+      </button>
+    </div>
   </div>

@@ -9,8 +9,7 @@
   @Component({
     selector: 'app-navbar',
     standalone: true,
-    imports: [CommonModule, RouterLink,
-              MatToolbarModule, MatButtonModule, MatIconModule],
+    imports: [CommonModule, RouterLink, MatToolbarModule, MatButtonModule, MatIconModule],
     templateUrl: './navbar.html'
   })
   export class NavbarComponent {
@@ -19,13 +18,6 @@
  
     constructor(public auth: AuthService, private router: Router) {}
  
-    toggleDark() {
-      this.darkMode = !this.darkMode;
-      this.darkModeToggle.emit();
-    }
- 
-    logout() {
-      this.auth.logout();
-      this.router.navigate(['/home']);
-    }
+    toggleDark() { this.darkMode = !this.darkMode; this.darkModeToggle.emit(); }
+    logout() { this.auth.logout(); this.router.navigate(['/home']); }
   }

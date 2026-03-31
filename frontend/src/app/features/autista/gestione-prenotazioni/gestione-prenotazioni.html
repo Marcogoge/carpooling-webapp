@@ -1,29 +1,38 @@
-  <div class="pagina">
-    <h2>Gestione Prenotazioni</h2>
-    <p class="successo" *ngIf="messaggio">{{messaggio}}</p>
-    <mat-card class="filtro-card">
-      <mat-form-field appearance="outline">
-        <mat-label>Voto minimo passeggero (1-5)</mat-label>
+  <div class="page-header">
+    <div class="page-title" style="margin-bottom:0">Prenotazioni ricevute</div>
+    <button mat-button routerLink="/autista/dashboard">&#8592; Dashboard</button>
+  </div>
+  <div class="alert alert-success" *ngIf="messaggio">{{messaggio}}</div>
+  <div class="search-box" style="margin-bottom:20px">
+    <div style="display:flex;gap:14px;align-items:flex-start">
+      <mat-form-field appearance="outline" style="flex:1">
+        <mat-label>Filtra per voto minimo passeggero (1-5)</mat-label>
         <input matInput type="number" min="1" max="5" [(ngModel)]="votoMin">
       </mat-form-field>
-      <button mat-button (click)="carica()">Filtra</button>
-    </mat-card>
-    <p *ngIf="prenotazioni.length===0">Nessuna prenotazione.</p>
-    <mat-card *ngFor="let p of prenotazioni" class="prenotazione-card">
-      <mat-card-header>
-        <mat-card-title>{{p.nome}} {{p.cognome}}</mat-card-title>
-        <mat-card-subtitle>
-          Voto medio: {{p.voto_medio ?? 'Nessun feedback'}}
-        </mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <p>Stato: <strong>{{p.stato}}</strong></p>
-      </mat-card-content>
-      <mat-card-actions *ngIf="p.stato === 'attesa'">
-        <button mat-raised-button color="primary"
-                (click)="accetta(p.id_prenotazione)">Accetta</button>
-        <button mat-raised-button color="warn"
-                (click)="rifiuta(p.id_prenotazione)">Rifiuta</button>
-      </mat-card-actions>
-    </mat-card>
+      <button mat-stroked-button (click)="carica()" style="height:56px">Applica</button>
+    </div>
+  </div>
+  <div *ngIf="prenotazioni.length===0" class="empty"><p>Nessuna prenotazione.</p></div>
+  <div *ngFor="let p of prenotazioni" class="pren-card">
+    <div class="pren-header">
+      <div>
+        <div class="pren-nome">{{p.nome}} {{p.cognome}}</div>
+        <div style="font-size:.8rem;color:var(--text-muted)">{{p.email}}</div>
+        <div class="stelle" style="margin-top:4px">
+          <span *ngFor="let s of [1,2,3,4,5]" class="stella" [class.piena]="p.voto_medio&&s<=Math.round(p.voto_medio)">&#9733;</span>
+          <span class="voto-txt">{{p.voto_medio?(p.voto_medio|number:'1.1-1'):'Nessun voto'}}</span>
+        </div>
+      </div>
+      <span class="chip" [class.chip-green]="p.stato==='accettata'" [class.chip-red]="p.stato==='rifiutata'" [class.chip-yellow]="p.stato==='attesa'">{{p.stato}}</span>
+    </div>
+    <div class="pren-actions">
+      <ng-container *ngIf="p.stato==='attesa'">
+        <button mat-raised-button color="primary" (click)="accetta(p.id_prenotazione)">Accetta</button>
+        <button mat-raised-button color="warn" (click)="rifiuta(p.id_prenotazione)">Rifiuta</button>
+      </ng-container>
+      <button mat-stroked-button *ngIf="p.stato==='accettata'"
+              (click)="lasiciaFeedback(idViaggio, p.id_passeggero)">
+        Lascia recensione
+      </button>
+    </div>
   </div>

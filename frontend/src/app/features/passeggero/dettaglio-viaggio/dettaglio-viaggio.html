@@ -1,133 +1,43 @@
- <div class="contenuto">
-    <mat-spinner *ngIf="caricamento" diameter="36"
-                 style="margin:40px auto"></mat-spinner>
- 
-    <div class="alert alert-error" *ngIf="errore && !viaggio">
-      {{errore}}
+  <mat-spinner *ngIf="caricamento" diameter="32" style="margin:40px auto"></mat-spinner>
+  <div class="alert alert-error" *ngIf="errore&&!viaggio">{{errore}}</div>
+  <div *ngIf="viaggio&&!caricamento">
+    <button mat-button (click)="back()" style="margin-bottom:14px;padding-left:0">&#8592; Torna ai risultati</button>
+    <div class="detail-box">
+      <div class="detail-route">
+        <span>{{viaggio.citta_partenza}}</span>
+        <span class="trip-arrow" style="font-size:1.7rem">&#8594;</span>
+        <span>{{viaggio.citta_arrivo}}</span>
+      </div>
+      <div class="info-grid">
+        <div><div class="info-lbl">Data e ora</div><div class="info-val">{{viaggio.data_ora_partenza|date:'dd MMMM yyyy, HH:mm'}}</div></div>
+        <div><div class="info-lbl">Durata</div><div class="info-val">{{viaggio.tempo_stimato}} min</div></div>
+        <div><div class="info-lbl">Contributo</div><div class="info-val">EUR {{viaggio.contributo}}</div></div>
+        <div><div class="info-lbl">Posti</div><span class="chip chip-green">{{viaggio.posti_disponibili}} disponibili</span></div>
+        <div *ngIf="viaggio.soste"><div class="info-lbl">Soste</div><div class="info-val">{{viaggio.soste}}</div></div>
+        <div><div class="info-lbl">Auto</div><div class="info-val">{{viaggio.marca_auto}} {{viaggio.modello_auto}} ({{viaggio.targa_auto}})</div></div>
+        <div><div class="info-lbl">Bagaglio</div><span class="chip" [class.chip-green]="viaggio.bagaglio" [class.chip-red]="!viaggio.bagaglio">{{viaggio.bagaglio?'Ammesso':'Non ammesso'}}</span></div>
+        <div><div class="info-lbl">Animali</div><span class="chip" [class.chip-green]="viaggio.animali" [class.chip-red]="!viaggio.animali">{{viaggio.animali?'Ammessi':'Non ammessi'}}</span></div>
+      </div>
+      <hr class="divider">
+      <div class="autista-row">
+        <div>
+          <div class="info-lbl">Autista</div>
+          <div class="info-val" style="font-size:1.05rem">{{viaggio.nome}} {{viaggio.cognome}}</div>
+          <div class="stelle" style="margin-top:6px">
+            <span *ngFor="let s of [1,2,3,4,5]" class="stella" [class.piena]="isPiena(s,viaggio.voto_medio_autista)">&#9733;</span>
+            <span class="voto-txt">{{viaggio.voto_medio_autista?(viaggio.voto_medio_autista|number:'1.1-1'):'Nessun voto'}}</span>
+          </div>
+        </div>
+        <button mat-raised-button color="primary" style="padding:10px 24px" (click)="prenota()" [disabled]="!!messaggio">Prenota</button>
+      </div>
     </div>
- 
-    <div *ngIf="viaggio && !caricamento">
- 
-      <button mat-button color="primary"
-              (click)="indietro()"
-              style="margin-bottom:16px; padding-left:0">
-        &#8592; Torna ai risultati
-      </button>
- 
-      <div class="dettaglio-box">
-        <div class="dettaglio-rotta">
-          <span>{{viaggio.citta_partenza}}</span>
-          <span class="freccia" style="font-size:1.6rem">&#8594;</span>
-          <span>{{viaggio.citta_arrivo}}</span>
-        </div>
- 
-        <div class="info-grid">
-          <div class="info-item">
-            <div class="label">Data e ora</div>
-            <div class="value">
-              {{viaggio.data_ora_partenza | date:'dd MMMM yyyy, HH:mm'}}
-            </div>
-          </div>
-          <div class="info-item">
-            <div class="label">Durata stimata</div>
-            <div class="value">{{viaggio.tempo_stimato}} min</div>
-          </div>
-          <div class="info-item">
-            <div class="label">Contributo</div>
-            <div class="value">EUR {{viaggio.contributo}}</div>
-          </div>
-          <div class="info-item">
-            <div class="label">Posti disponibili</div>
-            <div class="value">
-              <span class="chip chip-green">{{viaggio.posti_disponibili}}</span>
-            </div>
-          </div>
-          <div class="info-item" *ngIf="viaggio.soste">
-            <div class="label">Soste previste</div>
-            <div class="value">{{viaggio.soste}}</div>
-          </div>
-          <div class="info-item">
-            <div class="label">Automobile</div>
-            <div class="value">
-              {{viaggio.marca_auto}} {{viaggio.modello_auto}}
-              ({{viaggio.targa_auto}})
-            </div>
-          </div>
-          <div class="info-item">
-            <div class="label">Bagaglio</div>
-            <span class="chip"
-                  [class.chip-green]="viaggio.bagaglio"
-                  [class.chip-red]="!viaggio.bagaglio">
-              {{viaggio.bagaglio ? 'Ammesso' : 'Non ammesso'}}
-            </span>
-          </div>
-          <div class="info-item">
-            <div class="label">Animali</div>
-            <span class="chip"
-                  [class.chip-green]="viaggio.animali"
-                  [class.chip-red]="!viaggio.animali">
-              {{viaggio.animali ? 'Ammessi' : 'Non ammessi'}}
-            </span>
-          </div>
-        </div>
- 
-        <hr class="divider">
- 
-        <div class="autista-row">
-          <div>
-            <div class="label" style="font-size:0.75rem; font-weight:600;
-                 text-transform:uppercase; letter-spacing:0.6px;
-                 color:var(--text-muted); margin-bottom:4px">Autista</div>
-            <div style="font-weight:700; font-size:1.05rem">
-              {{viaggio.nome}} {{viaggio.cognome}}
-            </div>
-            <div class="stelle" style="margin-top:6px">
-              <span *ngFor="let s of [1,2,3,4,5]"
-                    class="stella"
-                    [class.piena]="isPiena(s, viaggio.voto_medio_autista)">
-                &#9733;
-              </span>
-              <span class="voto-txt" *ngIf="viaggio.voto_medio_autista">
-                {{viaggio.voto_medio_autista | number:'1.1-1'}}
-              </span>
-              <span class="voto-txt" *ngIf="!viaggio.voto_medio_autista">
-                Nessun voto
-              </span>
-            </div>
-          </div>
- 
-          <button mat-raised-button color="primary"
-                  style="padding:10px 28px; font-size:0.95rem"
-                  (click)="prenota()"
-                  [disabled]="!!messaggio">
-            Prenota questo viaggio
-          </button>
-        </div>
-      </div>
- 
-      <div class="alert alert-success" *ngIf="messaggio">{{messaggio}}</div>
-      <div class="alert alert-error"   *ngIf="errore && viaggio">{{errore}}</div>
- 
-      <!-- FEEDBACK -->
-      <div class="sezione-titolo" style="margin-top:32px">
-        Recensioni sull'autista
-      </div>
- 
-      <div *ngIf="feedback.length===0" class="empty" style="padding:24px 0">
-        <p>Ancora nessuna recensione per questo autista.</p>
-      </div>
- 
-      <div *ngFor="let f of feedback" class="feedback-item">
-        <div class="stelle">
-          <span *ngFor="let s of [1,2,3,4,5]"
-                class="stella"
-                [class.piena]="isPiena(s, f.voto)">&#9733;</span>
-          <span class="voto-txt">{{f.voto}}/5</span>
-        </div>
-        <div class="feedback-testo">{{f.giudizio}}</div>
-        <div class="feedback-autore">
-          {{f.autore_nome}} {{f.autore_cognome}}
-        </div>
-      </div>
+    <div class="alert alert-success" *ngIf="messaggio">{{messaggio}}</div>
+    <div class="alert alert-error" *ngIf="errore&&viaggio">{{errore}}</div>
+    <div class="section-label">Recensioni autista</div>
+    <div *ngIf="feedback.length===0" class="empty" style="padding:20px 0"><p>Nessuna recensione ancora.</p></div>
+    <div *ngFor="let f of feedback" class="feedback-item">
+      <div class="stelle"><span *ngFor="let s of [1,2,3,4,5]" class="stella" [class.piena]="isPiena(s,f.voto)">&#9733;</span><span class="voto-txt">{{f.voto}}/5</span></div>
+      <div class="feedback-text">{{f.giudizio}}</div>
+      <div class="feedback-author">{{f.autore_nome}} {{f.autore_cognome}}</div>
     </div>
   </div>

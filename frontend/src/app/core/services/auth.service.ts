@@ -6,6 +6,7 @@
   export class AuthService {
     private apiA = `${environment.apiUrl}/autisti/index.php`;
     private apiP = `${environment.apiUrl}/passeggeri/index.php`;
+    private apiL = `${environment.apiUrl}/login`;
  
     constructor(private http: HttpClient) {}
  
@@ -17,14 +18,13 @@
       return this.http.post<any>(this.apiP, dati);
     }
  
-    loginAutista(id: number, nome: string) {
-      sessionStorage.setItem('utente',
-        JSON.stringify({ id, nome, tipo: 'autista' }));
+    // Login reale: verifica email+nome nel DB
+    login(email: string, nome: string, tipo: 'autista'|'passeggero') {
+      return this.http.post<any>(this.apiL, { email, nome, tipo });
     }
  
-    loginPasseggero(id: number, nome: string) {
-      sessionStorage.setItem('utente',
-        JSON.stringify({ id, nome, tipo: 'passeggero' }));
+    salvaUtente(utente: any, tipo: string) {
+      sessionStorage.setItem('utente', JSON.stringify({ ...utente, tipo }));
     }
  
     getUtente() {
@@ -33,5 +33,6 @@
     }
  
     logout() { sessionStorage.removeItem('utente'); }
+ 
     isLoggedIn() { return !!this.getUtente(); }
   }

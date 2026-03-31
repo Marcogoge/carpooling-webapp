@@ -1,7 +1,7 @@
   import { ApplicationConfig } from '@angular/core';
   import { provideRouter } from '@angular/router';
   import { provideHttpClient } from '@angular/common/http';
-  import { provideAnimations } from '@angular/platform-browser/animations';
+  import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
   import { provideNativeDateAdapter } from '@angular/material/core';
   import { routes } from './app.routes';
  
@@ -9,7 +9,8 @@
     providers: [
       provideRouter(routes),
       provideHttpClient(),
-      provideAnimations(),
+      // FIX: async invece di sync — risolve il blocco degli input
+      provideAnimationsAsync(),
       provideNativeDateAdapter(),
     ]
   };

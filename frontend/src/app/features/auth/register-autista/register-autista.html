@@ -1,74 +1,91 @@
-<!-- SCHERMATA SUCCESSO CON ID -->
+  <!-- SCHERMATA SUCCESSO -->
   <div class="form-page" *ngIf="idRicevuto">
     <div class="form-box" style="text-align:center">
-      <div style="font-size:2.5rem; margin-bottom:16px">&#10003;</div>
-      <h2 style="margin-bottom:8px">Registrazione completata</h2>
-      <p class="subtitle">Conserva il tuo ID per accedere alla piattaforma.</p>
+      <div style="font-size:3rem;color:#065f46;margin-bottom:12px">&#10003;</div>
+      <h2>Benvenuto!</h2>
+      <p class="form-subtitle">Registrazione completata. Conserva le tue credenziali.</p>
       <div class="id-box">
         <div class="id-label">Il tuo ID autista</div>
-        <div class="id-numero">{{idRicevuto}}</div>
-        <div class="id-note">Annotalo — ti servira per fare login</div>
+        <div class="id-number">{{idRicevuto}}</div>
+        <div class="id-hint">Accedi con la tua email e nome</div>
       </div>
-      <button mat-raised-button color="primary"
-              class="btn-full" (click)="vai()">Vai al login</button>
+      <button mat-raised-button color="primary" class="btn-full" routerLink="/login">Vai al login</button>
     </div>
   </div>
  
   <!-- FORM REGISTRAZIONE -->
   <div class="form-page" *ngIf="!idRicevuto">
-    <div class="form-box">
+    <div class="form-box" style="max-width:520px">
       <h2>Registrazione Autista</h2>
-      <p class="subtitle">Crea il tuo profilo per offrire passaggi</p>
- 
+      <p class="form-subtitle">Crea il tuo profilo per offrire passaggi</p>
       <div class="alert alert-error" *ngIf="errore">{{errore}}</div>
  
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>Nome</mat-label>
-          <input matInput [(ngModel)]="form.nome">
+          <mat-label>Nome
+            <mat-icon style="font-size:14px;vertical-align:middle;cursor:help"
+                      [matTooltip]="HINTS.nome" matTooltipPosition="above">info</mat-icon>
+          </mat-label>
+          <input matInput [(ngModel)]="form.nome" [class.campo-errore]="erroriCampi.nome">
+          <mat-error>{{erroriCampi.nome}}</mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>Cognome</mat-label>
-          <input matInput [(ngModel)]="form.cognome">
+          <mat-label>Cognome
+            <mat-icon style="font-size:14px;vertical-align:middle;cursor:help"
+                      [matTooltip]="HINTS.cognome" matTooltipPosition="above">info</mat-icon>
+          </mat-label>
+          <input matInput [(ngModel)]="form.cognome" [class.campo-errore]="erroriCampi.cognome">
+          <mat-error>{{erroriCampi.cognome}}</mat-error>
         </mat-form-field>
       </div>
  
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>Numero patente</mat-label>
-          <input matInput [(ngModel)]="form.num_patente">
+          <mat-label>Numero patente
+            <mat-icon style="font-size:14px;vertical-align:middle;cursor:help"
+                      [matTooltip]="HINTS.patente" matTooltipPosition="above">info</mat-icon>
+          </mat-label>
+          <input matInput [(ngModel)]="form.num_patente" placeholder="AB1234567C"
+                 [class.campo-errore]="erroriCampi.patente">
+          <mat-error>{{erroriCampi.patente}}</mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>Scadenza patente</mat-label>
-          <input matInput type="date" [(ngModel)]="form.scadenza_patente">
+          <mat-label>Scadenza patente
+            <mat-icon style="font-size:14px;vertical-align:middle;cursor:help"
+                      [matTooltip]="HINTS.scadenza" matTooltipPosition="above">info</mat-icon>
+          </mat-label>
+          <input matInput type="date" [(ngModel)]="form.scadenza_patente"
+                 [class.campo-errore]="erroriCampi.scadenza">
+          <mat-error>{{erroriCampi.scadenza}}</mat-error>
         </mat-form-field>
       </div>
  
       <mat-form-field appearance="outline" class="full">
-        <mat-label>Telefono</mat-label>
-        <input matInput [(ngModel)]="form.telefono">
+        <mat-label>Telefono
+          <mat-icon style="font-size:14px;vertical-align:middle;cursor:help"
+                    [matTooltip]="HINTS.telefono" matTooltipPosition="above">info</mat-icon>
+        </mat-label>
+        <input matInput [(ngModel)]="form.telefono" placeholder="3331234567"
+               [class.campo-errore]="erroriCampi.telefono">
+        <mat-error>{{erroriCampi.telefono}}</mat-error>
       </mat-form-field>
  
       <mat-form-field appearance="outline" class="full">
-        <mat-label>Email</mat-label>
-        <input matInput type="email" [(ngModel)]="form.email">
+        <mat-label>Email
+          <mat-icon style="font-size:14px;vertical-align:middle;cursor:help"
+                    [matTooltip]="HINTS.email" matTooltipPosition="above">info</mat-icon>
+        </mat-label>
+        <input matInput type="email" [(ngModel)]="form.email" placeholder="mario@email.it"
+               [class.campo-errore]="erroriCampi.email">
+        <mat-error>{{erroriCampi.email}}</mat-error>
       </mat-form-field>
  
       <div class="form-actions">
-        <button mat-raised-button color="primary"
-                class="btn-full"
-                (click)="registra()" [disabled]="caricamento">
-          {{caricamento ? 'Registrazione...' : 'Registrati'}}
+        <button mat-raised-button color="primary" class="btn-full" (click)="registra()" [disabled]="caricamento">
+          {{caricamento ? 'Registrazione...' : 'Crea account'}}
         </button>
       </div>
- 
-      <div class="form-link">
-        Sei un passeggero?
-        <a routerLink="/registra-passeggero">Registrati qui</a>
-      </div>
-      <div class="form-link" style="margin-top:6px">
-        Hai gia un account?
-        <a routerLink="/login">Accedi</a>
-      </div>
+      <div class="form-footer">Sei un passeggero? <a routerLink="/registra-passeggero">Registrati qui</a></div>
+      <div class="form-footer" style="margin-top:6px">Hai gia un account? <a routerLink="/login">Accedi</a></div>
     </div>
   </div>

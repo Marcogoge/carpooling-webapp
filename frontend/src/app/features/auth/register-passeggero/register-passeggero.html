@@ -1,68 +1,75 @@
-  <!-- SCHERMATA SUCCESSO CON ID -->
   <div class="form-page" *ngIf="idRicevuto">
     <div class="form-box" style="text-align:center">
-      <div style="font-size:2.5rem; margin-bottom:16px">&#10003;</div>
-      <h2 style="margin-bottom:8px">Registrazione completata</h2>
-      <p class="subtitle">Conserva il tuo ID per accedere alla piattaforma.</p>
+      <div style="font-size:3rem;color:#065f46;margin-bottom:12px">&#10003;</div>
+      <h2>Benvenuto!</h2>
+      <p class="form-subtitle">Registrazione completata. Accedi con la tua email e nome.</p>
       <div class="id-box">
         <div class="id-label">Il tuo ID passeggero</div>
-        <div class="id-numero">{{idRicevuto}}</div>
-        <div class="id-note">Annotalo — ti servira per fare login</div>
+        <div class="id-number">{{idRicevuto}}</div>
+        <div class="id-hint">Accedi con email e nome</div>
       </div>
-      <button mat-raised-button color="primary"
-              class="btn-full" (click)="vai()">Vai al login</button>
+      <button mat-raised-button color="primary" class="btn-full" routerLink="/login">Vai al login</button>
     </div>
   </div>
  
-  <!-- FORM REGISTRAZIONE -->
   <div class="form-page" *ngIf="!idRicevuto">
     <div class="form-box">
       <h2>Registrazione Passeggero</h2>
-      <p class="subtitle">Crea il tuo profilo per prenotare un viaggio</p>
- 
+      <p class="form-subtitle">Crea il tuo profilo per prenotare viaggi</p>
       <div class="alert alert-error" *ngIf="errore">{{errore}}</div>
  
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>Nome</mat-label>
+          <mat-label>Nome
+            <mat-icon style="font-size:14px;vertical-align:middle;cursor:help"
+                      [matTooltip]="HINTS.nome" matTooltipPosition="above">info</mat-icon>
+          </mat-label>
           <input matInput [(ngModel)]="form.nome">
+          <mat-error>{{erroriCampi.nome}}</mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>Cognome</mat-label>
+          <mat-label>Cognome
+            <mat-icon style="font-size:14px;vertical-align:middle;cursor:help"
+                      [matTooltip]="HINTS.cognome" matTooltipPosition="above">info</mat-icon>
+          </mat-label>
           <input matInput [(ngModel)]="form.cognome">
+          <mat-error>{{erroriCampi.cognome}}</mat-error>
         </mat-form-field>
       </div>
  
       <mat-form-field appearance="outline" class="full">
-        <mat-label>Documento di identita</mat-label>
-        <input matInput [(ngModel)]="form.documento_identita">
+        <mat-label>Documento di identita
+          <mat-icon style="font-size:14px;vertical-align:middle;cursor:help"
+                    [matTooltip]="HINTS.documento" matTooltipPosition="above">info</mat-icon>
+        </mat-label>
+        <input matInput [(ngModel)]="form.documento_identita" placeholder="AB1234567CD">
+        <mat-error>{{erroriCampi.documento}}</mat-error>
       </mat-form-field>
  
       <mat-form-field appearance="outline" class="full">
-        <mat-label>Telefono</mat-label>
-        <input matInput [(ngModel)]="form.telefono">
+        <mat-label>Telefono
+          <mat-icon style="font-size:14px;vertical-align:middle;cursor:help"
+                    [matTooltip]="HINTS.telefono" matTooltipPosition="above">info</mat-icon>
+        </mat-label>
+        <input matInput [(ngModel)]="form.telefono" placeholder="3331234567">
+        <mat-error>{{erroriCampi.telefono}}</mat-error>
       </mat-form-field>
  
       <mat-form-field appearance="outline" class="full">
-        <mat-label>Email</mat-label>
-        <input matInput type="email" [(ngModel)]="form.email">
+        <mat-label>Email
+          <mat-icon style="font-size:14px;vertical-align:middle;cursor:help"
+                    [matTooltip]="HINTS.email" matTooltipPosition="above">info</mat-icon>
+        </mat-label>
+        <input matInput type="email" [(ngModel)]="form.email" placeholder="mario@email.it">
+        <mat-error>{{erroriCampi.email}}</mat-error>
       </mat-form-field>
  
       <div class="form-actions">
-        <button mat-raised-button color="primary"
-                class="btn-full"
-                (click)="registra()" [disabled]="caricamento">
-          {{caricamento ? 'Registrazione...' : 'Registrati'}}
+        <button mat-raised-button color="primary" class="btn-full" (click)="registra()" [disabled]="caricamento">
+          {{caricamento ? 'Registrazione...' : 'Crea account'}}
         </button>
       </div>
- 
-      <div class="form-link">
-        Sei un autista?
-        <a routerLink="/registra-autista">Registrati qui</a>
-      </div>
-      <div class="form-link" style="margin-top:6px">
-        Hai gia un account?
-        <a routerLink="/login">Accedi</a>
-      </div>
+      <div class="form-footer">Sei un autista? <a routerLink="/registra-autista">Registrati qui</a></div>
+      <div class="form-footer" style="margin-top:6px">Hai gia un account? <a routerLink="/login">Accedi</a></div>
     </div>
   </div>

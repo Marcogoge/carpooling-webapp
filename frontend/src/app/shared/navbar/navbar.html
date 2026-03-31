@@ -1,26 +1,21 @@
   <mat-toolbar color="primary" class="navbar">
     <span class="brand" routerLink="/home">CarPooling</span>
     <span class="spacer"></span>
- 
     <ng-container *ngIf="auth.isLoggedIn(); else nonLoggato">
       <span class="utente">{{auth.getUtente()?.nome}}</span>
- 
       <ng-container *ngIf="auth.getUtente()?.tipo === 'autista'">
         <a mat-button routerLink="/autista/dashboard">Dashboard</a>
-        <a mat-button routerLink="/autista/crea-viaggio">Nuovo viaggio</a>
+        <a mat-button routerLink="/autista/crea-viaggio">+ Viaggio</a>
       </ng-container>
- 
       <ng-container *ngIf="auth.getUtente()?.tipo === 'passeggero'">
-        <a mat-button routerLink="/passeggero/cerca">Cerca viaggi</a>
+        <a mat-button routerLink="/passeggero/cerca">Cerca</a>
         <a mat-button routerLink="/passeggero/dashboard">Prenotazioni</a>
       </ng-container>
- 
       <button mat-icon-button (click)="toggleDark()" title="Cambia tema">
         <mat-icon>{{darkMode ? 'light_mode' : 'dark_mode'}}</mat-icon>
       </button>
       <button mat-button (click)="logout()">Esci</button>
     </ng-container>
- 
     <ng-template #nonLoggato>
       <button mat-icon-button (click)="toggleDark()" title="Cambia tema">
         <mat-icon>{{darkMode ? 'light_mode' : 'dark_mode'}}</mat-icon>

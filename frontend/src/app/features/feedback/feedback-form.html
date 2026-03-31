@@ -1,0 +1,46 @@
+  <div class="form-page">
+    <div class="form-box">
+      <div *ngIf="messaggio" style="text-align:center">
+        <div style="font-size:2.5rem;color:#065f46;margin-bottom:12px">&#10003;</div>
+        <h2>Grazie per la recensione!</h2>
+        <p class="form-subtitle">Reindirizzamento in corso...</p>
+      </div>
+ 
+      <div *ngIf="!messaggio">
+        <h2>Lascia una recensione</h2>
+        <p class="form-subtitle">
+          {{tipo==='per_autista' ? 'Valuta l autista del viaggio' : 'Valuta il passeggero'}}
+        </p>
+ 
+        <div class="alert alert-error" *ngIf="errore">{{errore}}</div>
+ 
+        <div style="margin-bottom:8px;font-size:.875rem;font-weight:600;color:var(--text-muted)">
+          VOTO
+        </div>
+        <div class="star-picker">
+          <button *ngFor="let s of [1,2,3,4,5]"
+                  class="star-btn" [class.sel]="s<=voto"
+                  (click)="setVoto(s)">
+            &#9733;
+          </button>
+        </div>
+        <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:20px">
+          {{voto>0 ? voto+'/5 stelle selezionate' : 'Clicca una stella per dare un voto'}}
+        </p>
+ 
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Commento (opzionale)</mat-label>
+          <textarea matInput rows="4" [(ngModel)]="giudizio"
+                    placeholder="Scrivi la tua esperienza..."></textarea>
+        </mat-form-field>
+ 
+        <div class="form-actions">
+          <button mat-raised-button color="primary" class="btn-full"
+                  (click)="invia()" [disabled]="caricamento||voto===0">
+            {{caricamento?'Invio...':'Invia recensione'}}
+          </button>
+          <button mat-button style="width:100%;margin-top:8px" (click)="back()">Annulla</button>
+        </div>
+      </div>
+    </div>
+  </div>
