@@ -17,10 +17,10 @@
         <mat-label>Email</mat-label>
         <input matInput type="email" [(ngModel)]="email" placeholder="es. mario@email.it">
       </mat-form-field>
-      <mat-form-field appearance="outline" class="full">
-        <mat-label>Nome</mat-label>
-        <input matInput [(ngModel)]="nome" placeholder="es. Mario">
-      </mat-form-field>
+      <mat-form-field>
+  <mat-label>ID utente</mat-label>
+  <input matInput [(ngModel)]="id" name="id" type="number">
+</mat-form-field>
       <div class="tipo-toggle">
         <button class="tipo-opt" [class.on]="tipo==='passeggero'" (click)="tipo='passeggero'">Passeggero</button>
         <button class="tipo-opt" [class.on]="tipo==='autista'"    (click)="tipo='autista'">Autista</button>

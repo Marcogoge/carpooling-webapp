@@ -86,21 +86,24 @@ def login():
     b = request.json
     tipo  = b.get('tipo','')
     email = b.get('email','').strip().lower()
-    nome  = b.get('nome','').strip()
-    if not email or not nome or tipo not in ['autista','passeggero']:
+    id    = b.get('id')                              # <-- era: nome = b.get('nome','').strip()
+
+    if not email or not id or tipo not in ['autista','passeggero']:
         return jsonify({'errore':'Dati mancanti'}), 400
+
     conn = get_db()
     if tipo == 'autista':
         row = conn.execute(
-            'SELECT id_autista AS id, nome, cognome, email FROM autista  WHERE LOWER(email)=? AND LOWER(nome)=?',
-            (email, nome.lower())).fetchone()
+            'SELECT id_autista AS id, nome, cognome, email FROM autista WHERE LOWER(email)=? AND id_autista=?',
+            (email, int(id))).fetchone()             # <-- era: AND LOWER(nome)=?
     else:
         row = conn.execute(
-            'SELECT id_passeggero AS id, nome, cognome, email FROM passeggero WHERE LOWER(email)=? AND LOWER(nome)=?',
-            (email, nome.lower())).fetchone()
+            'SELECT id_passeggero AS id, nome, cognome, email FROM passeggero WHERE LOWER(email)=? AND id_passeggero=?',
+            (email, int(id))).fetchone()             # <-- era: AND LOWER(nome)=?
     conn.close()
+
     if not row:
-        return jsonify({'errore':'Credenziali non valide. Controlla email e nome.'}), 401
+        return jsonify({'errore':'Credenziali non valide. Controlla email e ID.'}), 401
     return jsonify({'successo':True,'utente':dict(row),'tipo':tipo})
 
 # ── AUTISTI ──────────────────────────────────────────────────────

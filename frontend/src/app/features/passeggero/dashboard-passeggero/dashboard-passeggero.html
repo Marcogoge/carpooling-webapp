@@ -24,6 +24,14 @@
         {{p.stato}}
       </span>
     </div>
+      <section>
+  <h2>Viaggi disponibili</h2>
+  <div *ngFor="let v of viaggiDisponibili">
+    <p>{{ v.partenza }} → {{ v.arrivo }} — {{ v.data }}</p>
+    <button mat-button (click)="vai(v.id_viaggio)">Vedi dettaglio</button>
+  </div>
+  <p *ngIf="viaggiDisponibili.length === 0">Nessun viaggio disponibile al momento.</p>
+</section>
     <!-- Feedback solo per prenotazioni accettate, usa p.id_autista dal DB -->
     <div class="pren-actions" *ngIf="p.stato==='accettata'">
       <button mat-stroked-button color="primary"
