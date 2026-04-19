@@ -1,22 +1,66 @@
-  <div class="page-header">
-    <div class="page-title" style="margin-bottom:0">I tuoi viaggi</div>
-    <button mat-raised-button color="primary" routerLink="/autista/crea-viaggio">+ Nuovo viaggio</button>
-  </div>
-  <mat-spinner *ngIf="caricamento" diameter="32" style="margin:40px auto"></mat-spinner>
-  <div *ngIf="!caricamento&&viaggi.length===0" class="empty">
-    <p>Non hai ancora creato nessun viaggio.</p>
-    <button mat-raised-button color="primary" routerLink="/autista/crea-viaggio">Crea il primo</button>
-  </div>
-  <div *ngFor="let v of viaggi" class="trip-card">
-    <div class="trip-route"><span>{{v.citta_partenza}}</span><span class="trip-arrow">&#8594;</span><span>{{v.citta_arrivo}}</span></div>
-    <div class="trip-meta" style="margin-bottom:14px">
-      <span class="chip">{{v.data_ora_partenza|date:'dd MMM yyyy, HH:mm'}}</span>
-      <span class="chip chip-green">{{v.posti_disponibili}}/{{v.posti_max}} posti</span>
-      <span class="chip chip-yellow" *ngIf="v.prenotazioni_in_attesa>0">{{v.prenotazioni_in_attesa}} in attesa</span>
-      <span class="chip chip-blue">EUR {{v.contributo}}</span>
-    </div>
-    <div style="display:flex;gap:8px">
-      <button mat-stroked-button color="primary" (click)="vaiPrenotazioni(v.id_viaggio)">Prenotazioni</button>
-      <button mat-stroked-button color="warn" (click)="elimina(v.id_viaggio)">Elimina</button>
-    </div>
-  </div>
+<!-- HEADER -->
+<div class="dash-header">
+<div>
+<div class="page-title" style="margin-bottom:4px">
+Ciao, {{utente?.nome}} &#128075;
+</div>
+<div style="font-size:.9rem;color:var(--text-muted)">
+Gestisci i tuoi viaggi
+</div>
+</div>
+<button mat-raised-button color="primary" routerLink="/autista/crea-viaggio">
++ Nuovo viaggio
+</button>
+</div>
+<!-- STATISTICHE -->
+<div class="stats-row" *ngIf="!caricamento">
+<div class="stat-card">
+<div class="stat-num">{{viaggi.length}}</div>
+<div class="stat-lbl">Viaggi totali</div>
+</div>
+<div class="stat-card">
+<div class="stat-num">
+{{viaggi | sum:'posti_disponibili'}}
+</div>
+<div class="stat-lbl">Posti liberi</div>
+</div>
+<div class="stat-card">
+<div class="stat-num">
+{{viaggi | sum:'prenotazioni_in_attesa'}}
+</div>
+<div class="stat-lbl">In attesa</div>
+</div>
+</div>
+<mat-spinner *ngIf="caricamento" diameter="32" style="margin:40px auto"></mat-spinner>
+<div class="section-label" *ngIf="!caricamento">I tuoi viaggi</div>
+<div *ngIf="!caricamento && viaggi.length===0" class="empty">
+<p>Non hai ancora creato nessun viaggio.</p>
+<button mat-raised-button color="primary" routerLink="/autista/crea-viaggio">
+Crea il primo viaggio
+</button>
+</div>
+<div *ngFor="let v of viaggi" class="trip-card" style="cursor:default">
+<div class="trip-route">
+<span>{{v.citta_partenza}}</span><span class="trip-arrow">&#8594;</span>
+<span>{{v.citta_arrivo}}</span>
+</div>
+<div class="trip-meta" style="margin-bottom:14px">
+<span class="chip">{{v.data_ora_partenza|date:'dd MMM yyyy, HH:mm'}}</span>
+<span class="chip chip-green">{{v.posti_disponibili}}/{{v.posti_max}} posti</span>
+<span class="chip chip-yellow" *ngIf="v.prenotazioni_in_attesa>0">
+{{v.prenotazioni_in_attesa}} in attesa
+</span>
+<span class="chip chip-blue">EUR {{v.contributo}}</span>
+<span class="chip" *ngIf="v.bagaglio">Bagaglio</span>
+<span class="chip" *ngIf="v.animali">Animali</span>
+</div>
+<div style="display:flex;gap:8px">
+<button mat-stroked-button color="primary"
+(click)="vaiPrenotazioni(v.id_viaggio)">
+Gestisci prenotazioni
+</button>
+<button mat-stroked-button color="warn" (click)="elimina(v.id_viaggio)">
+Elimina
+</button>
+</div>
+</div>

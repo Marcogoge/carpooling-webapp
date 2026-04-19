@@ -188,26 +188,40 @@ def viaggi():
                 WHERE v.id_viaggio=? GROUP BY v.id_viaggio''', (id_v,)).fetchone()
             if not row: return jsonify({'errore':'Non trovato'}), 404
             return jsonify({'successo':True,'dati':dict(row)})
-        partenza = request.args.get('partenza','')
-        arrivo   = request.args.get('arrivo','')
-        data     = request.args.get('data','')
+      # ■■ GET lista viaggi con filtri ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+        partenza = request.args.get('partenza', '')
+        arrivo = request.args.get('arrivo', '')
+        data = request.args.get('data', '')
+        bagaglio = request.args.get('bagaglio', '') # '1' o '0'
+        animali = request.args.get('animali', '') # '1' o '0'
+        prezzo_max = request.args.get('prezzo_max','') # numero
+        posti_min = request.args.get('posti_min','1') # default 1
         sql = '''
-            SELECT v.*, a.nome, a.cognome, a.foto,
-                    ROUND(AVG(f.voto),1) as voto_medio_autista,
-                    (v.posti_max-(SELECT COUNT(*) FROM prenotazione p2
-                    WHERE p2.id_viaggio=v.id_viaggio AND p2.stato='accettata')) as posti_disponibili,
-                    (SELECT COUNT(*) FROM prenotazione p3
-                    WHERE p3.id_viaggio=v.id_viaggio AND p3.stato='attesa') as prenotazioni_in_attesa
-            FROM viaggio v JOIN autista a ON v.id_autista=a.id_autista
-            LEFT JOIN feedback f ON f.id_destinatario_autista=a.id_autista
-            WHERE 1=1
+        SELECT v.*, a.nome, a.cognome, a.foto,
+        ROUND(AVG(f.voto),1) as voto_medio_autista,
+        (v.posti_max-(SELECT COUNT(*) FROM prenotazione p2
+        WHERE p2.id_viaggio=v.id_viaggio AND p2.stato='accettata'))
+        as posti_disponibili,
+        (SELECT COUNT(*) FROM prenotazione p3
+        WHERE p3.id_viaggio=v.id_viaggio AND p3.stato='attesa')
+        as prenotazioni_in_attesa
+        FROM viaggio v
+        JOIN autista a ON v.id_autista=a.id_autista
+        LEFT JOIN feedback f ON f.id_destinatario_autista=a.id_autista
+        WHERE 1=1
         '''
-        params=[]
-        if partenza: sql+=' AND v.citta_partenza=?'; params.append(partenza)
-        if arrivo:   sql+=' AND v.citta_arrivo=?';   params.append(arrivo)
-        if data:     sql+=' AND date(v.data_ora_partenza)=?'; params.append(data)
-        sql+=' GROUP BY v.id_viaggio HAVING posti_disponibili>0 ORDER BY v.data_ora_partenza'
-        rows = conn.execute(sql,params).fetchall()
+        params = []
+        if partenza: sql += ' AND LOWER(v.citta_partenza) LIKE ?'; params.append(f'%{partenza.
+        lower()}%')
+        if arrivo: sql += ' AND LOWER(v.citta_arrivo) LIKE ?'; params.append(f'%{arrivo.lower()}%')
+        if data: sql += ' AND date(v.data_ora_partenza)=?'; params.append(data)
+        if bagaglio: sql += ' AND v.bagaglio=?'; params.append(int(bagaglio))
+        if animali: sql += ' AND v.animali=?'; params.append(int(animali))
+        if prezzo_max: sql += ' AND v.contributo<=?'; params.append(float(prezzo_max))
+        sql += ' GROUP BY v.id_viaggio HAVING posti_disponibili>=?'
+        params.append(int(posti_min) if posti_min else 1)
+        sql += ' ORDER BY v.data_ora_partenza'
+        rows = conn.execute(sql, params).fetchall()
         return jsonify({'successo':True,'dati':[dict(r) for r in rows]})
     if request.method == 'POST':
         b = request.json

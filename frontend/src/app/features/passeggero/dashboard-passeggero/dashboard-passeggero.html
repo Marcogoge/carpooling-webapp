@@ -1,42 +1,84 @@
-  <div class="page-title">Le mie prenotazioni</div>
-  <mat-spinner *ngIf="caricamento" diameter="32" style="margin:40px auto"></mat-spinner>
-  <div *ngIf="!caricamento&&prenotazioni.length===0" class="empty">
-    <p>Nessuna prenotazione ancora.</p>
-    <button mat-stroked-button color="primary" routerLink="/passeggero/cerca">Cerca un viaggio</button>
-  </div>
-  <div *ngFor="let p of prenotazioni" class="pren-card">
-    <div class="pren-header">
-      <div>
-        <div class="trip-route" style="font-size:1rem;margin-bottom:4px">
-          <span>{{p.citta_partenza}}</span>
-          <span class="trip-arrow">&#8594;</span>
-          <span>{{p.citta_arrivo}}</span>
-        </div>
-        <div style="font-size:.82rem;color:var(--text-muted)">{{p.data_ora_partenza|date:'dd MMM yyyy, HH:mm'}}</div>
-        <div style="font-size:.82rem;color:var(--text-muted);margin-top:2px">
-          Autista: {{p.nome_autista}} {{p.cog_autista}} &nbsp;|&nbsp; EUR {{p.contributo}}
-        </div>
-      </div>
-      <span class="chip"
-            [class.chip-green]="p.stato==='accettata'"
-            [class.chip-red]="p.stato==='rifiutata'"
-            [class.chip-yellow]="p.stato==='attesa'">
-        {{p.stato}}
-      </span>
-    </div>
-      <section>
-  <h2>Viaggi disponibili</h2>
-  <div *ngFor="let v of viaggiDisponibili">
-    <p>{{ v.partenza }} → {{ v.arrivo }} — {{ v.data }}</p>
-    <button mat-button (click)="vai(v.id_viaggio)">Vedi dettaglio</button>
-  </div>
-  <p *ngIf="viaggiDisponibili.length === 0">Nessun viaggio disponibile al momento.</p>
-</section>
-    <!-- Feedback solo per prenotazioni accettate, usa p.id_autista dal DB -->
-    <div class="pren-actions" *ngIf="p.stato==='accettata'">
-      <button mat-stroked-button color="primary"
-              (click)="lasiciaFeedback(p.id_viaggio, p.id_autista)">
-        Lascia una recensione
-      </button>
-    </div>
-  </div>
+<!-- HEADER BENVENUTO -->
+<div class="dash-header">
+<div>
+<div class="page-title" style="margin-bottom:4px">
+Ciao, {{utente?.nome}} &#128075;
+</div>
+<div style="font-size:.9rem;color:var(--text-muted)">
+Bentornato nella tua area personale
+</div>
+</div>
+<button mat-raised-button color="primary" routerLink="/passeggero/cerca">
++ Cerca un viaggio
+</button>
+</div>
+<!-- STATISTICHE RAPIDE -->
+<div class="stats-row" *ngIf="!caricamento">
+<div class="stat-card">
+<div class="stat-num">{{prenotazioniAccettate.length}}</div>
+<div class="stat-lbl">Confermate</div>
+</div>
+<div class="stat-card">
+<div class="stat-num">{{prenotazioniAttesa.length}}</div>
+<div class="stat-lbl">In attesa</div>
+</div>
+<div class="stat-card">
+<div class="stat-num">{{prenotazioni.length}}</div>
+<div class="stat-lbl">Totali</div>
+</div>
+</div>
+<mat-spinner *ngIf="caricamento" diameter="32" style="margin:40px auto"></mat-spinner>
+<!-- LE MIE PRENOTAZIONI -->
+<div *ngIf="!caricamento"><div class="section-label">Le mie prenotazioni</div>
+<div *ngIf="prenotazioni.length===0" class="empty">
+<p>Non hai ancora prenotazioni.</p>
+<button mat-raised-button color="primary" routerLink="/passeggero/cerca">
+Cerca il tuo primo viaggio
+</button>
+</div>
+<div *ngFor="let p of prenotazioni" class="pren-card">
+<div class="pren-header">
+<div>
+<div class="trip-route" style="font-size:1rem;margin-bottom:4px">
+<span>{{p.citta_partenza}}</span>
+<span class="trip-arrow">&#8594;</span>
+<span>{{p.citta_arrivo}}</span>
+</div>
+<div style="font-size:.82rem;color:var(--text-muted)">
+{{p.data_ora_partenza|date:'dd MMM yyyy, HH:mm'}}
+</div>
+<div style="font-size:.82rem;color:var(--text-muted);margin-top:2px">
+Autista: {{p.nome_autista}} {{p.cog_autista}} | EUR {{p.contributo}}
+</div>
+</div>
+<span class="chip"
+[class.chip-green]="p.stato==='accettata'"
+[class.chip-red]="p.stato==='rifiutata'"
+[class.chip-yellow]="p.stato==='attesa'">
+{{p.stato}}
+</span>
+</div>
+<div class="pren-actions" *ngIf="p.stato==='accettata'">
+<button mat-stroked-button color="primary"
+(click)="lasiciaFeedback(p.id_viaggio, p.id_autista)">
+Lascia recensione
+</button>
+</div>
+</div>
+<!-- VIAGGI SUGGERITI -->
+<div class="section-label" style="margin-top:32px">Viaggi disponibili ora</div>
+<div *ngFor="let v of viaggiSuggeriti" class="trip-card"
+routerLink="/passeggero/viaggio/{{v.id_viaggio}}">
+<div class="trip-route">
+<span>{{v.citta_partenza}}</span>
+<span class="trip-arrow">&#8594;</span>
+<span>{{v.citta_arrivo}}</span>
+</div>
+<div class="trip-meta">
+<span class="chip">{{v.data_ora_partenza|date:'dd MMM yyyy, HH:mm'}}</span>
+<span class="chip chip-green">{{v.posti_disponibili}} posti</span>
+<span class="chip chip-blue">EUR {{v.contributo}}</span>
+</div></div>
+<button mat-stroked-button routerLink="/passeggero/cerca"
+style="margin-top:8px">Vedi tutti i viaggi</button>
+</div>

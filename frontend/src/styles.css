@@ -370,3 +370,52 @@
   /* === TOOLTIP INFO ICON === */
   .mat-mdc-tooltip { font-size: 0.78rem !important; max-width: 260px !important; }
   mat-icon[mattooltip] { color: var(--denim); vertical-align: middle; }
+  /* === DASHBOARD HEADER === */
+.dash-header {
+display: flex; justify-content: space-between;
+align-items: flex-start; margin-bottom: 24px;
+}
+/* === STATISTICHE === */
+.stats-row {
+display: grid; grid-template-columns: repeat(3,1fr);
+gap: 14px; margin-bottom: 28px;
+}
+.stat-card {
+background: var(--surface);
+border: 1px solid var(--border);
+border-radius: var(--r);
+padding: 20px; text-align: center;
+box-shadow: var(--sh1);
+}
+.stat-num {
+font-size: 2rem; font-weight: 800;
+color: var(--dusk); line-height: 1;
+margin-bottom: 6px;
+}
+.stat-lbl {
+font-size: .78rem; font-weight: 600;
+text-transform: uppercase; letter-spacing: .6px;
+color: var(--text-muted);
+}
+/* === HERO FEATURES === */
+.hero-features {
+display: flex; gap: 24px; justify-content: center;
+flex-wrap: wrap; margin-top: 40px; position: relative;
+}
+.hero-feat {
+background: rgba(255,255,255,0.12);
+border: 1px solid rgba(255,255,255,0.2);
+border-radius: 8px; padding: 10px 18px;
+font-size: .9rem; font-weight: 500;
+color: var(--alabaster);
+}
+/* === FILTRI AGGIUNTIVI === */
+.filtri-extra {display: flex; gap: 12px; align-items: flex-start;
+flex-wrap: wrap; margin-top: 14px; padding-top: 14px;
+border-top: 1px solid var(--border);
+}
+.filtri-label {
+font-size: .8rem; font-weight: 600; color: var(--text-muted);
+text-transform: uppercase; letter-spacing: .5px;
+align-self: center;
+}

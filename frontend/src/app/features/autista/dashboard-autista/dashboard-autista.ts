@@ -5,9 +5,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ViaggioService } from '../../../core/services/viaggio.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { SumPipe } from '../../../core/services/pipes/sum.pipe';
 @Component({
   selector: 'app-dashboard-autista', standalone: true,
-  imports: [CommonModule, RouterLink, MatButtonModule, MatProgressSpinnerModule],
+  imports: [CommonModule, RouterLink, MatButtonModule, MatProgressSpinnerModule, SumPipe],
   templateUrl: './dashboard-autista.html'
 })
 export class DashboardAutistaComponent implements OnInit {

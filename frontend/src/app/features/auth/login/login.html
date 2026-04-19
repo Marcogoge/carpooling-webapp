@@ -1,50 +1,69 @@
- <div class="hero">
-    <div class="hero-eyebrow">Mobilita sostenibile</div>
-    <div class="hero-title">Il tuo prossimo viaggio<br>inizia qui.</div>
-    <div class="hero-sub">Condividi il percorso, dividi le spese. Semplice.</div>
-    <div class="hero-cta">
-      <button class="btn-hero-main" (click)="mostraLogin=true">Accedi</button>
-      <button class="btn-hero-ghost" routerLink="/registra-passeggero">Registrati gratis</button>
-    </div>
-  </div>
- 
-  <div *ngIf="mostraLogin" style="max-width:440px;margin:32px auto">
-    <div class="form-box">
-      <h2>Accedi</h2>
-      <p class="form-subtitle">Usa la email e il nome con cui ti sei registrato</p>
-      <div class="alert alert-error" *ngIf="errore">{{errore}}</div>
-      <mat-form-field appearance="outline" class="full">
-        <mat-label>Email</mat-label>
-        <input matInput type="email" [(ngModel)]="email" placeholder="es. mario@email.it">
-      </mat-form-field>
-      <mat-form-field>
-  <mat-label>ID utente</mat-label>
-  <input matInput [(ngModel)]="id" name="id" type="number">
+<!-- HERO -->
+<div class="hero">
+<div class="hero-eyebrow">Mobilita sostenibile</div>
+<div class="hero-title">Il tuo prossimo viaggio<br>inizia qui.</div>
+<div class="hero-sub">
+Condividi il percorso, dividi le spese. Unisciti a chi viaggia smart.
+</div>
+<div class="hero-cta">
+<button class="btn-hero-main" (click)="mostraLogin=true">Accedi</button>
+<button class="btn-hero-ghost" routerLink="/registra-passeggero">
+Registrati gratis
+</button>
+</div>
+<!-- 3 FEATURES IN EVIDENZA -->
+<div class="hero-features">
+<div class="hero-feat">&#128652; Scegli il viaggio</div>
+<div class="hero-feat">&#9989; Prenota in un click</div>
+<div class="hero-feat">&#11088; Lascia una recensione</div>
+</div>
+</div>
+<!-- FORM LOGIN -->
+<div *ngIf="mostraLogin" style="max-width:440px;margin:32px auto">
+<div class="form-box">
+<h2>Accedi</h2>
+<p class="form-subtitle">Usa email e id con cui ti sei registrato</p>
+<div class="alert alert-error" *ngIf="errore">{{errore}}</div>
+<mat-form-field appearance="outline" class="full">
+<mat-label>Email</mat-label>
+<input matInput type="email" [(ngModel)]="email">
 </mat-form-field>
-      <div class="tipo-toggle">
-        <button class="tipo-opt" [class.on]="tipo==='passeggero'" (click)="tipo='passeggero'">Passeggero</button>
-        <button class="tipo-opt" [class.on]="tipo==='autista'"    (click)="tipo='autista'">Autista</button>
-      </div>
-      <div class="form-actions">
-        <button mat-raised-button color="primary" class="btn-full" (click)="accedi()" [disabled]="caricamento">
-          {{caricamento ? 'Verifica in corso...' : 'Entra'}}
-        </button>
-      </div>
-      <div class="form-footer">Non hai un account? <a routerLink="/registra-passeggero">Registrati</a></div>
-    </div>
-  </div>
- 
-  <div class="section-label" style="margin-top:40px" *ngIf="viaggi.length>0">Viaggi disponibili</div>
-  <div *ngFor="let v of viaggi" class="trip-card" (click)="vai(v.id_viaggio)">
-    <div class="trip-route">
-      <span>{{v.citta_partenza}}</span>
-      <span class="trip-arrow">&#8594;</span>
-      <span>{{v.citta_arrivo}}</span>
-    </div>
-    <div class="trip-meta">
-      <span class="chip">{{v.data_ora_partenza|date:'dd MMM yyyy, HH:mm'}}</span>
-      <span class="chip chip-green">{{v.posti_disponibili}} posti</span>
-      <span class="chip chip-blue">EUR {{v.contributo}}</span>
-      <span class="chip">{{v.nome}} {{v.cognome}}</span>
-    </div>
-  </div>
+<mat-form-field appearance="outline" class="full">
+<mat-label>Id</mat-label>
+<input matInput [(ngModel)]="id">
+</mat-form-field>
+<div class="tipo-toggle">
+<button class="tipo-opt" [class.on]="tipo==='passeggero'"
+(click)="tipo='passeggero'">Passeggero</button>
+<button class="tipo-opt" [class.on]="tipo==='autista'"
+(click)="tipo='autista'">Autista</button>
+</div>
+<div class="form-actions">
+<button mat-raised-button color="primary" class="btn-full"
+(click)="accedi()" [disabled]="caricamento">
+{{caricamento ? 'Verifica...' : 'Entra'}}</button>
+</div>
+<div class="form-footer">
+Non hai un account?
+<a routerLink="/registra-passeggero">Registrati</a>
+</div>
+</div>
+</div>
+<!-- VIAGGI IN EVIDENZA -->
+<div class="section-label" style="margin-top:40px">Viaggi disponibili</div>
+<div *ngIf="viaggi.length===0" class="empty">
+<p>Nessun viaggio disponibile al momento.</p>
+</div>
+<div *ngFor="let v of viaggi" class="trip-card" (click)="vai(v.id_viaggio)">
+<div class="trip-route">
+<span>{{v.citta_partenza}}</span>
+<span class="trip-arrow">&#8594;</span>
+<span>{{v.citta_arrivo}}</span>
+</div>
+<div class="trip-meta">
+<span class="chip">{{v.data_ora_partenza|date:'dd MMM yyyy, HH:mm'}}</span>
+<span class="chip chip-green">{{v.posti_disponibili}} posti</span>
+<span class="chip chip-blue">EUR {{v.contributo}}</span>
+<span class="chip">{{v.nome}} {{v.cognome}}</span>
+</div>
+</div>

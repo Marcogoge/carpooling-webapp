@@ -1,30 +1,80 @@
- <div class="page-title">Cerca un viaggio</div>
-  <div class="search-box">
-    <div class="search-grid">
-      <mat-form-field appearance="outline"><mat-label>Partenza</mat-label><input matInput [(ngModel)]="partenza" placeholder="es. Milano"></mat-form-field>
-      <mat-form-field appearance="outline"><mat-label>Arrivo</mat-label><input matInput [(ngModel)]="arrivo" placeholder="es. Roma"></mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Data</mat-label>
-        <input matInput [matDatepicker]="dp" [(ngModel)]="dataObj" placeholder="Seleziona">
-        <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
-        <mat-datepicker #dp></mat-datepicker>
-      </mat-form-field>
-      <button mat-raised-button color="primary" style="height:56px" (click)="cerca()">Cerca</button>
-    </div>
-  </div>
-  <mat-spinner *ngIf="caricamento" diameter="32" style="margin:32px auto"></mat-spinner>
-  <div *ngIf="cercato&&viaggi.length===0" class="empty"><p>Nessun viaggio trovato.</p></div>
-  <div *ngFor="let v of viaggi" class="trip-card" (click)="vai(v.id_viaggio)">
-    <div class="trip-route"><span>{{v.citta_partenza}}</span><span class="trip-arrow">&#8594;</span><span>{{v.citta_arrivo}}</span></div>
-    <div class="trip-meta">
-      <span class="chip">{{v.data_ora_partenza|date:'dd MMM yyyy, HH:mm'}}</span>
-      <span class="chip chip-green">{{v.posti_disponibili}} posti</span>
-      <span class="chip chip-blue">EUR {{v.contributo}}</span>
-      <span class="chip">{{v.marca_auto}} {{v.modello_auto}}</span>
-      <span class="chip">{{v.nome}} {{v.cognome}}</span>
-      <span class="chip" *ngIf="v.voto_medio_autista">
-        <span class="stelle"><span *ngFor="let s of [1,2,3,4,5]" class="stella" [class.piena]="isPiena(s,v.voto_medio_autista)">&#9733;</span></span>
-        {{v.voto_medio_autista|number:'1.1-1'}}
-      </span>
-    </div>
-  </div>
+<div class="page-title">Trova un viaggio</div>
+<!-- BOX FILTRI -->
+<div class="search-box">
+<div class="search-grid">
+<mat-form-field appearance="outline">
+<mat-label>Partenza</mat-label>
+<input matInput [(ngModel)]="partenza" placeholder="es. Milano">
+</mat-form-field>
+<mat-form-field appearance="outline">
+<mat-label>Arrivo</mat-label>
+<input matInput [(ngModel)]="arrivo" placeholder="es. Roma">
+</mat-form-field>
+<mat-form-field appearance="outline">
+<mat-label>Data</mat-label>
+<input matInput [matDatepicker]="dp" [(ngModel)]="dataObj">
+<mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
+<mat-datepicker #dp></mat-datepicker>
+</mat-form-field>
+<mat-form-field appearance="outline">
+<mat-label>Prezzo max (EUR)</mat-label>
+<input matInput type="number" [(ngModel)]="prezzoMax" placeholder="es. 30">
+</mat-form-field>
+</div>
+<!-- FILTRI AGGIUNTIVI -->
+<div class="filtri-extra">
+<span class="filtri-label">Filtri aggiuntivi:</span>
+<mat-form-field appearance="outline" style="width:160px">
+<mat-label>Bagaglio</mat-label>
+<mat-select [(ngModel)]="bagaglio">
+<mat-option [value]="null">Indifferente</mat-option>
+<mat-option [value]="true">Ammesso</mat-option>
+<mat-option [value]="false">Non ammesso</mat-option>
+</mat-select>
+</mat-form-field>
+<mat-form-field appearance="outline" style="width:160px">
+<mat-label>Animali</mat-label>
+<mat-select [(ngModel)]="animali">
+<mat-option [value]="null">Indifferente</mat-option>
+<mat-option [value]="true">Ammessi</mat-option>
+<mat-option [value]="false">Non ammessi</mat-option>
+</mat-select>
+</mat-form-field>
+<mat-form-field appearance="outline" style="width:130px">
+<mat-label>Posti minimi</mat-label>
+<input matInput type="number" [(ngModel)]="postiMin" min="1" max="8">
+</mat-form-field>
+<button mat-raised-button color="primary" (click)="cerca()">Cerca</button>
+<button mat-stroked-button (click)="reset()">Reset</button></div>
+</div>
+<mat-spinner *ngIf="caricamento" diameter="32" style="margin:32px auto"></mat-spinner>
+<!-- RISULTATI -->
+<div class="section-label" *ngIf="!caricamento">
+{{cercato ? (viaggi.length + ' risultati trovati') : 'Tutti i viaggi disponibili'}}
+</div>
+<div *ngIf="!caricamento && viaggi.length===0" class="empty">
+<p>Nessun viaggio trovato con i criteri selezionati.</p>
+<button mat-stroked-button (click)="reset()">Mostra tutti i viaggi</button>
+</div>
+<div *ngFor="let v of viaggi" class="trip-card" (click)="vai(v.id_viaggio)">
+<div class="trip-route">
+<span>{{v.citta_partenza}}</span>
+<span class="trip-arrow">&#8594;</span>
+<span>{{v.citta_arrivo}}</span>
+</div>
+<div class="trip-meta">
+<span class="chip">{{v.data_ora_partenza|date:'dd MMM yyyy, HH:mm'}}</span>
+<span class="chip chip-green">{{v.posti_disponibili}} posti</span>
+<span class="chip chip-blue">EUR {{v.contributo}}</span>
+<span class="chip" *ngIf="v.bagaglio">🚚 Bagaglio OK</span>
+<span class="chip" *ngIf="v.animali">🐶 Animali OK</span>
+<span class="chip">{{v.nome}} {{v.cognome}}</span>
+<span class="chip" *ngIf="v.voto_medio_autista">
+<span class="stelle">
+<span *ngFor="let s of [1,2,3,4,5]" class="stella"
+[class.piena]="isPiena(s,v.voto_medio_autista)">&#9733;</span>
+</span>
+{{v.voto_medio_autista|number:'1.1-1'}}
+</span>
+</div>
+</div>
