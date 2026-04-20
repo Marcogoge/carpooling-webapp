@@ -16,7 +16,8 @@ import { AuthService } from '../../../core/services/auth.service';
   templateUrl: './register-passeggero.html'
 })
 export class RegisterPasseggeroComponent {
-  form = { nome:'', cognome:'', documento_identita:'', telefono:'', email:'' };
+  form = { nome:'', cognome:'', documento_identita:'',
+           telefono:'', email:'', password:'' };
   idRicevuto: number|null = null;
   errore = ''; erroriCampi: any = {}; caricamento = false;
 
@@ -30,20 +31,24 @@ export class RegisterPasseggeroComponent {
   readonly HINTS = {
     nome:      'Solo lettere, min 2 caratteri',
     cognome:   'Solo lettere, min 2 caratteri',
-    documento: 'Carta identita (es: AB1234567CD) o passaporto o altro documento valido',
+    documento: 'Carta identita (es: AB1234567CD) o passaporto',
     telefono:  'Numero cellulare italiano. Es: 3331234567',
     email:     'Indirizzo email valido. Es: mario@email.it',
+    password:  'Minimo 6 caratteri',
   };
 
-  constructor(private auth: AuthService, private router: Router, private cdr: ChangeDetectorRef) {}
+  constructor(private auth: AuthService, private router: Router,
+              private cdr: ChangeDetectorRef) {}
 
   valida(): boolean {
     this.erroriCampi = {};
-    if (!this.REGEX.nome.test(this.form.nome)) this.erroriCampi.nome = 'Nome non valido';
-    if (!this.REGEX.nome.test(this.form.cognome)) this.erroriCampi.cognome = 'Cognome non valido';
-    if (this.form.documento_identita.length < 5) this.erroriCampi.documento = 'Documento non valido';
+    if (!this.REGEX.nome.test(this.form.nome))      this.erroriCampi.nome = 'Nome non valido';
+    if (!this.REGEX.nome.test(this.form.cognome))   this.erroriCampi.cognome = 'Cognome non valido';
+    if (this.form.documento_identita.length < 5)    this.erroriCampi.documento = 'Documento non valido';
     if (!this.REGEX.telefono.test(this.form.telefono)) this.erroriCampi.telefono = 'Telefono non valido';
-    if (!this.REGEX.email.test(this.form.email)) this.erroriCampi.email = 'Email non valida';
+    if (!this.REGEX.email.test(this.form.email))    this.erroriCampi.email = 'Email non valida';
+    if (!this.form.password || this.form.password.length < 6)
+      this.erroriCampi.password = 'Password minimo 6 caratteri';
     return Object.keys(this.erroriCampi).length === 0;
   }
 
@@ -52,16 +57,8 @@ export class RegisterPasseggeroComponent {
     this.caricamento = true; this.errore = '';
     const payload = { ...this.form, email: this.form.email.toLowerCase() };
     this.auth.registraPasseggero(payload).subscribe({
-      next: (r: any) => {
-        this.caricamento = false;
-        this.idRicevuto = r.id;
-        this.cdr.detectChanges(); // FIX
-      },
-      error: (e: any) => {
-        this.caricamento = false;
-        this.errore = e.error?.errore ?? 'Errore';
-        this.cdr.detectChanges(); // FIX
-      }
+      next: (r: any) => { this.caricamento = false; this.idRicevuto = r.id; this.cdr.detectChanges(); },
+      error: (e: any) => { this.caricamento = false; this.errore = e.error?.errore ?? 'Errore'; this.cdr.detectChanges(); }
     });
   }
 }

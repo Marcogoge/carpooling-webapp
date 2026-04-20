@@ -10,18 +10,24 @@ import { ViaggioService } from '../../../core/services/viaggio.service';
 
 @Component({
   selector: 'app-login', standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [CommonModule, FormsModule, RouterLink,
+            MatFormFieldModule, MatInputModule, MatButtonModule],
   templateUrl: './login.html'
 })
 export class LoginComponent implements OnInit {
-  email = '';
-  id = '';                                          // <-- era: nome = ''
+  email    = '';
+  password = '';
   tipo: 'autista'|'passeggero' = 'passeggero';
-  mostraLogin = false; errore = ''; caricamento = false; viaggi: any[] = [];
+  mostraLogin = false;
+  errore      = '';
+  caricamento = false;
+  viaggi: any[] = [];
 
   constructor(
-    private auth: AuthService, private router: Router,
-    private vs: ViaggioService, private cdr: ChangeDetectorRef
+    private auth: AuthService,
+    private router: Router,
+    private vs: ViaggioService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -35,22 +41,22 @@ export class LoginComponent implements OnInit {
     });
   }
 
-accedi() {
-  if (!this.email || !this.id) { this.errore = 'Inserisci email e ID'; return; }
-  this.caricamento = true; this.errore = '';
-  this.auth.login(this.email, +this.id, this.tipo).subscribe({ // <-- +this.id converte a number
-    next: (r: any) => {
-      this.caricamento = false;
-      this.auth.salvaUtente(r.utente, r.tipo);
-      this.router.navigate([r.tipo === 'autista' ? '/autista/dashboard' : '/passeggero/cerca']);
-    },
-    error: (e: any) => {
-      this.caricamento = false;
-      this.errore = e.error?.errore ?? 'Errore di accesso';
-      this.cdr.detectChanges();
-    }
-  });
-}
+  accedi() {
+    if (!this.email || !this.password) { this.errore = 'Inserisci email e password'; return; }
+    this.caricamento = true; this.errore = '';
+    this.auth.login(this.email, this.password, this.tipo).subscribe({
+      next: (r: any) => {
+        this.caricamento = false;
+        this.auth.salvaUtente(r.utente, r.tipo);
+        this.router.navigate([r.tipo === 'autista' ? '/autista/dashboard' : '/passeggero/cerca']);
+      },
+      error: (e: any) => {
+        this.caricamento = false;
+        this.errore = e.error?.errore ?? 'Errore di accesso';
+        this.cdr.detectChanges();
+      }
+    });
+  }
 
   vai(id: number) { this.router.navigate(['/passeggero/viaggio', id]); }
   isPiena(s: number, v: number|null) { return v !== null && s <= Math.round(v); }

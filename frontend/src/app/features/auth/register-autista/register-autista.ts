@@ -16,7 +16,8 @@ import { AuthService } from '../../../core/services/auth.service';
   templateUrl: './register-autista.html'
 })
 export class RegisterAutistaComponent {
-  form = { nome:'', cognome:'', num_patente:'', scadenza_patente:'', telefono:'', email:'' };
+  form = { nome:'', cognome:'', num_patente:'', scadenza_patente:'',
+           telefono:'', email:'', password:'' };
   idRicevuto: number|null = null;
   errore = ''; erroriCampi: any = {}; caricamento = false;
 
@@ -28,15 +29,17 @@ export class RegisterAutistaComponent {
   };
 
   readonly HINTS = {
-    nome:      'Solo lettere, min 2 caratteri. Es: Mario',
-    cognome:   'Solo lettere, min 2 caratteri. Es: Rossi',
-    patente:   'Formato: AA0000000A (2 lettere, 7 cifre, 1 lettera). Es: AB1234567C',
-    telefono:  'Numero italiano. Es: 3331234567 oppure +39 333 1234567',
-    email:     'Indirizzo email valido. Es: mario.rossi@email.it',
-    scadenza:  'Data di scadenza della patente',
+    nome:     'Solo lettere, min 2 caratteri. Es: Mario',
+    cognome:  'Solo lettere, min 2 caratteri. Es: Rossi',
+    patente:  'Formato: AB1234567C (2 lettere, 7 cifre, 1 lettera)',
+    telefono: 'Numero italiano. Es: 3331234567',
+    email:    'Indirizzo email valido. Es: mario@email.it',
+    scadenza: 'Data di scadenza della patente',
+    password: 'Minimo 6 caratteri',
   };
 
-  constructor(private auth: AuthService, private router: Router, private cdr: ChangeDetectorRef) {}
+  constructor(private auth: AuthService, private router: Router,
+              private cdr: ChangeDetectorRef) {}
 
   valida(): boolean {
     this.erroriCampi = {};
@@ -52,25 +55,20 @@ export class RegisterAutistaComponent {
       this.erroriCampi.telefono = 'Numero di telefono non valido';
     if (!this.REGEX.email.test(this.form.email))
       this.erroriCampi.email = 'Email non valida';
+    if (!this.form.password || this.form.password.length < 6)
+      this.erroriCampi.password = 'Password minimo 6 caratteri';
     return Object.keys(this.erroriCampi).length === 0;
   }
 
   registra() {
     if (!this.valida()) { this.errore = 'Correggi i campi evidenziati'; return; }
     this.caricamento = true; this.errore = '';
-    const payload = { ...this.form, num_patente: this.form.num_patente.toUpperCase(),
-                      email: this.form.email.toLowerCase() };
+    const payload = { ...this.form,
+      num_patente: this.form.num_patente.toUpperCase(),
+      email: this.form.email.toLowerCase() };
     this.auth.registraAutista(payload).subscribe({
-      next: (r: any) => {
-        this.caricamento = false;
-        this.idRicevuto = r.id;
-        this.cdr.detectChanges(); // FIX
-      },
-      error: (e: any) => {
-        this.caricamento = false;
-        this.errore = e.error?.errore ?? 'Errore';
-        this.cdr.detectChanges(); // FIX
-      }
+      next: (r: any) => { this.caricamento = false; this.idRicevuto = r.id; this.cdr.detectChanges(); },
+      error: (e: any) => { this.caricamento = false; this.errore = e.error?.errore ?? 'Errore'; this.cdr.detectChanges(); }
     });
   }
 }

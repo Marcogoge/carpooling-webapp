@@ -1,6 +1,10 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import sqlite3, os, re
+import hashlib
+
+def hash_pw(pw: str) -> str:
+    return hashlib.sha256(pw.encode()).hexdigest()
 
 app = Flask(__name__)
 CORS(app, origins=['http://localhost:4200'])
@@ -20,15 +24,20 @@ def init_db():
             num_patente TEXT NOT NULL UNIQUE,
             scadenza_patente TEXT NOT NULL,
             telefono TEXT NOT NULL,
-            email TEXT NOT NULL UNIQUE, foto TEXT
+            email TEXT NOT NULL UNIQUE,
+            foto TEXT,
+            password_hash TEXT NOT NULL DEFAULT ''
         );
+
         CREATE TABLE IF NOT EXISTS passeggero (
             id_passeggero INTEGER PRIMARY KEY AUTOINCREMENT,
             nome TEXT NOT NULL, cognome TEXT NOT NULL,
             documento_identita TEXT NOT NULL UNIQUE,
             telefono TEXT NOT NULL,
-            email TEXT NOT NULL UNIQUE
+            email TEXT NOT NULL UNIQUE,
+            password_hash TEXT NOT NULL DEFAULT ''
         );
+
         CREATE TABLE IF NOT EXISTS viaggio (
             id_viaggio INTEGER PRIMARY KEY AUTOINCREMENT,
             citta_partenza TEXT NOT NULL, citta_arrivo TEXT NOT NULL,
@@ -42,6 +51,7 @@ def init_db():
             id_autista INTEGER NOT NULL,
             FOREIGN KEY (id_autista) REFERENCES autista(id_autista)
         );
+
         CREATE TABLE IF NOT EXISTS prenotazione (
             id_prenotazione INTEGER PRIMARY KEY AUTOINCREMENT,
             data_prenotazione TEXT DEFAULT (datetime('now')),
@@ -51,32 +61,44 @@ def init_db():
             FOREIGN KEY (id_viaggio) REFERENCES viaggio(id_viaggio),
             FOREIGN KEY (id_passeggero) REFERENCES passeggero(id_passeggero)
         );
+
         CREATE TABLE IF NOT EXISTS feedback (
             id_feedback INTEGER PRIMARY KEY AUTOINCREMENT,
             voto INTEGER NOT NULL CHECK(voto BETWEEN 1 AND 5),
             giudizio TEXT,
             id_viaggio INTEGER NOT NULL,
+            id_autore_autista INTEGER,
             id_autore_passeggero INTEGER,
             id_destinatario_autista INTEGER,
             id_destinatario_passeggero INTEGER,
             tipo_feedback TEXT NOT NULL,
             FOREIGN KEY (id_viaggio) REFERENCES viaggio(id_viaggio)
         );
+
         INSERT OR IGNORE INTO autista VALUES
-            (1,'Marco','Rossi','PAT12345A','2028-05-12','3331111111','marco.rossi@email.it','marco.jpg'),
-            (2,'Luca','Bianchi','PAT67890B','2027-11-20','3332222222','luca.bianchi@email.it','luca.jpg');
+            (1,'Marco','Rossi','PAT12345A','2028-05-12','3331111111','marco.rossi@email.it','marco.jpg','%s'),
+            (2,'Luca','Bianchi','PAT67890B','2027-11-20','3332222222','luca.bianchi@email.it','luca.jpg','%s');
+
         INSERT OR IGNORE INTO passeggero VALUES
-            (1,'Alessandro','Conti','DOC001','3401111111','alessandro@email.it'),
-            (2,'Francesca','Romano','DOC002','3402222222','francesca@email.it');
+            (1,'Alessandro','Conti','DOC001','3401111111','alessandro@email.it','%s'),
+            (2,'Francesca','Romano','DOC002','3402222222','francesca@email.it','%s');
+
         INSERT OR IGNORE INTO viaggio VALUES
             (1,'Milano','Roma','2026-06-10 08:00:00',180,35.00,'Bologna',1,0,4,'Fiat','Tipo','AB123CD',1),
             (2,'Torino','Genova','2026-06-12 14:30:00',120,20.00,NULL,1,1,3,'Volkswagen','Golf','EF456GH',2);
+
         INSERT OR IGNORE INTO prenotazione VALUES
             (1,datetime('now'),'accettata',1,1),
             (2,datetime('now'),'attesa',1,2);
+
         INSERT OR IGNORE INTO feedback VALUES
-            (1,5,'Viaggio perfetto!',1,1,1,NULL,'per_autista');
-    ''')
+            (1,5,'Viaggio perfetto!',1,1,1,NULL,NULL,'per_autista');
+    ''' % (
+        hash_pw('password123'),
+        hash_pw('password123'),
+        hash_pw('password123'),
+        hash_pw('password123')
+    ))
     conn.commit(); conn.close()
 
 # ── LOGIN ────────────────────────────────────────────────────────
@@ -86,24 +108,25 @@ def login():
     b = request.json
     tipo  = b.get('tipo','')
     email = b.get('email','').strip().lower()
-    id    = b.get('id')                              # <-- era: nome = b.get('nome','').strip()
 
-    if not email or not id or tipo not in ['autista','passeggero']:
+    if not email or tipo not in ['autista','passeggero']:
         return jsonify({'errore':'Dati mancanti'}), 400
 
     conn = get_db()
     if tipo == 'autista':
         row = conn.execute(
-            'SELECT id_autista AS id, nome, cognome, email FROM autista WHERE LOWER(email)=? AND id_autista=?',
-            (email, int(id))).fetchone()             # <-- era: AND LOWER(nome)=?
+            'SELECT id_autista AS id, nome, cognome, email FROM autista '
+            'WHERE LOWER(email)=? AND password_hash=?',
+            (email, hash_pw(b.get('password','')))).fetchone()
     else:
         row = conn.execute(
-            'SELECT id_passeggero AS id, nome, cognome, email FROM passeggero WHERE LOWER(email)=? AND id_passeggero=?',
-            (email, int(id))).fetchone()             # <-- era: AND LOWER(nome)=?
+            'SELECT id_passeggero AS id, nome, cognome, email FROM passeggero '
+            'WHERE LOWER(email)=? AND password_hash=?',
+            (email, hash_pw(b.get('password','')))).fetchone()
     conn.close()
 
     if not row:
-        return jsonify({'errore':'Credenziali non valide. Controlla email e ID.'}), 401
+        return jsonify({'errore':'Credenziali non valide'}), 401
     return jsonify({'successo':True,'utente':dict(row),'tipo':tipo})
 
 # ── AUTISTI ──────────────────────────────────────────────────────
@@ -128,14 +151,15 @@ def autisti():
             GROUP BY a.id_autista''').fetchall()
         return jsonify({'successo':True,'dati':[dict(r) for r in rows]})
     b = request.json
-    campi = ['nome','cognome','num_patente','scadenza_patente','telefono','email']
+    campi = ['nome','cognome','num_patente','scadenza_patente','telefono','email','password']
     for f in campi:
         if not b.get(f): return jsonify({'errore':f'Campo mancante: {f}'}), 400
     try:
         conn.execute(
-            'INSERT INTO autista (nome,cognome,num_patente,scadenza_patente,telefono,email,foto)VALUES (?,?,?,?,?,?,?)',
+            'INSERT INTO autista (nome,cognome,num_patente,scadenza_patente,telefono,email,foto,password_hash) VALUES (?,?,?,?,?,?,?,?)',
             (b['nome'],b['cognome'],b['num_patente'],b['scadenza_patente'],
-            b['telefono'],b['email'].lower(),b.get('foto')))
+            b['telefono'],b['email'].lower(),b.get('foto'),
+            hash_pw(b['password'])))
         conn.commit()
         new_id = conn.execute('SELECT last_insert_rowid()').fetchone()[0]
         return jsonify({'successo':True,'id':new_id}), 201
@@ -158,17 +182,20 @@ def passeggeri():
         if not row: return jsonify({'errore':'Non trovato'}), 404
         return jsonify({'successo':True,'dati':dict(row)})
     b = request.json
-    for f in ['nome','cognome','documento_identita','telefono','email']:
+    for f in ['nome','cognome','documento_identita','telefono','email','password']:
         if not b.get(f): return jsonify({'errore':f'Campo mancante: {f}'}), 400
     try:
         conn.execute(
-            'INSERT INTO passeggero (nome,cognome,documento_identita,telefono,email)  VALUES (?,?,?,?,?)',
-            (b['nome'],b['cognome'],b['documento_identita'],b['telefono'],b['email'].lower()))
+            'INSERT INTO passeggero (nome,cognome,documento_identita,telefono,email,password_hash) VALUES (?,?,?,?,?,?)',
+            (b['nome'],b['cognome'],b['documento_identita'],b['telefono'],b['email'].lower(),
+             hash_pw(b['password'])))
         conn.commit()
         new_id = conn.execute('SELECT last_insert_rowid()').fetchone()[0]
         return jsonify({'successo':True,'id':new_id}), 201
     except Exception as e:
         return jsonify({'errore':'Email o documento gia registrati'}), 409
+
+# resto del codice IDENTICO...
 
 # ── VIAGGI ───────────────────────────────────────────────────────
 @app.route('/viaggi/index.php', methods=['GET','POST','DELETE','OPTIONS'])

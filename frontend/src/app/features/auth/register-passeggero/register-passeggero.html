@@ -63,8 +63,17 @@
         <input matInput type="email" [(ngModel)]="form.email" placeholder="mario@email.it">
         <mat-error>{{erroriCampi.email}}</mat-error>
       </mat-form-field>
- 
-      <div class="form-actions">
+      
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Password
+          <mat-icon style="font-size:14px;vertical-align:middle;cursor:help"
+                    [matTooltip]="HINTS.password" matTooltipPosition="above">info</mat-icon>
+        </mat-label>
+        <input matInput type="password" [(ngModel)]="form.password">
+        <mat-error>{{erroriCampi.password}}</mat-error>
+      </mat-form-field>
+      
+            <div class="form-actions">
         <button mat-raised-button color="primary" class="btn-full" (click)="registra()" [disabled]="caricamento">
           {{caricamento ? 'Registrazione...' : 'Crea account'}}
         </button>

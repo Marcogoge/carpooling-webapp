@@ -10,17 +10,11 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  registraAutista(dati: any) {
-    return this.http.post<any>(this.apiA, dati);
-  }
+  registraAutista(dati: any)   { return this.http.post<any>(this.apiA, dati); }
+  registraPasseggero(dati: any){ return this.http.post<any>(this.apiP, dati); }
 
-  registraPasseggero(dati: any) {
-    return this.http.post<any>(this.apiP, dati);
-  }
-
-  // Login con email + id invece di email + nome
-  login(email: string, id: number, tipo: 'autista'|'passeggero') {  // <-- era: nome: string
-    return this.http.post<any>(this.apiL, { email, id, tipo });      // <-- era: { email, nome, tipo }
+  login(email: string, password: string, tipo: 'autista'|'passeggero') {
+    return this.http.post<any>(this.apiL, { email, password, tipo });
   }
 
   salvaUtente(utente: any, tipo: string) {
@@ -32,7 +26,6 @@ export class AuthService {
     return u ? JSON.parse(u) : null;
   }
 
-  logout() { sessionStorage.removeItem('utente'); }
-
   isLoggedIn() { return !!this.getUtente(); }
+  logout()     { sessionStorage.removeItem('utente'); }
 }
